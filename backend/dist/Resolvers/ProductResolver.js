@@ -19,10 +19,10 @@ const ProductArgs_1 = require("../Models/Arguments/ProductArgs");
 const ProductEntity_1 = require("../Models/Entities/ProductEntity");
 const ProductService_1 = require("../Services/ProductService");
 let ProductResolver = class ProductResolver {
-    async addProduct({ model, title, description, price, images, productCode }) {
+    async addProduct({ model, title, description, price, image, productCode }) {
         try {
             const productInstance = new ProductService_1.ProductService();
-            await productInstance.add(model, title, description, price, images, productCode);
+            await productInstance.add(model, title, description, price, image, productCode);
             return true;
         }
         catch (err) {
@@ -47,6 +47,16 @@ let ProductResolver = class ProductResolver {
             return { errorMessage: err.message };
         }
     }
+    async getProductById(id) {
+        try {
+            const productInstance = new ProductService_1.ProductService();
+            const resp = await productInstance.getById(id);
+            return { products: [resp] };
+        }
+        catch (err) {
+            return { errorMessage: err.message };
+        }
+    }
 };
 __decorate([
     (0, type_graphql_1.Mutation)(returns => Boolean),
@@ -61,6 +71,13 @@ __decorate([
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", Promise)
 ], ProductResolver.prototype, "getAllProducts", null);
+__decorate([
+    (0, type_graphql_1.Query)(returns => productResponse_1.ProductResponse, { nullable: true }),
+    __param(0, (0, type_graphql_1.Arg)("id")),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], ProductResolver.prototype, "getProductById", null);
 ProductResolver = __decorate([
     (0, type_graphql_1.Resolver)(ProductEntity_1.Product)
 ], ProductResolver);

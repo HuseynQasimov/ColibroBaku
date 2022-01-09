@@ -12,12 +12,13 @@ export class UserService {
     return allUsers
   }
 
-  async signUpService (firstname:string, lastname:string, email:string, password:string) {
+  async signUpService (firstname:string, lastname:string, phone:string, email:string, password:string) {
     const hashedPass = await bcrypt.hash(password, 12)
     try {
       const user = await User.create({
         firstname,
         lastname,
+        phone,
         email,
         password: hashedPass
       }).save()

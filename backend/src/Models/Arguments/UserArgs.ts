@@ -12,6 +12,10 @@ export class signUpData {
   lastname: string
 
   @Field()
+  @Length(10, 12)
+  phone: string
+
+  @Field()
   @Length(6, 64)
   email: string
 

@@ -26,6 +26,11 @@ __decorate([
 ], signUpData.prototype, "lastname", void 0);
 __decorate([
     (0, type_graphql_1.Field)(),
+    (0, class_validator_1.Length)(10, 12),
+    __metadata("design:type", String)
+], signUpData.prototype, "phone", void 0);
+__decorate([
+    (0, type_graphql_1.Field)(),
     (0, class_validator_1.Length)(6, 64),
     __metadata("design:type", String)
 ], signUpData.prototype, "email", void 0);

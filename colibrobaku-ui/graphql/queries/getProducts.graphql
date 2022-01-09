@@ -1,0 +1,14 @@
+  query GetProducts{
+    getAllProducts{
+      errorMessage
+      products{
+      id,
+      title,
+      price,
+      model,
+      productCode,
+      description,
+      image
+      }
+    }
+ }

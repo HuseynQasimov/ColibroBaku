@@ -30,12 +30,13 @@ class UserService {
         const allUsers = await userRepository.find({});
         return allUsers;
     }
-    async signUpService(firstname, lastname, email, password) {
+    async signUpService(firstname, lastname, phone, email, password) {
         const hashedPass = await bcrypt.hash(password, 12);
         try {
             const user = await UserEntity_1.User.create({
                 firstname,
                 lastname,
+                phone,
                 email,
                 password: hashedPass
             }).save();

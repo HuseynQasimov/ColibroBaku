@@ -23,5 +23,5 @@ export class productData {
   price: number
 
   @Field()
-  images: string
+  image: string
 }

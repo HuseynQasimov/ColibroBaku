@@ -35,14 +35,14 @@ let UserResolver = class UserResolver {
         const user = await UserEntity_1.User.findOne({ where: { email: payload.email } });
         return { userData: user };
     }
-    async signUp({ firstname, lastname, email, password }) {
+    async signUp({ firstname, lastname, phone, email, password }) {
         const user = await UserEntity_1.User.findOne({ where: { email } });
         if (user) {
             return { errorMessage: "Email already signed up" };
         }
         try {
             const userInstance = new UserService_1.UserService();
-            const resp = await userInstance.signUpService(firstname, lastname, email, password);
+            const resp = await userInstance.signUpService(firstname, lastname, phone, email, password);
             return { userData: resp };
         }
         catch (err) {
@@ -127,7 +127,7 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], UserResolver.prototype, "login", null);
 __decorate([
-    (0, type_graphql_1.Mutation)(returns => Boolean),
+    (0, type_graphql_1.Query)(returns => Boolean),
     __param(0, (0, type_graphql_1.Ctx)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
