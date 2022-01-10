@@ -19,7 +19,7 @@ async function sendEmail(receiver, content) {
     const info = await transporter.sendMail({
         from: "greatcharlie717@gmail.com",
         to: receiver,
-        subject: "Hello ✔",
+        subject: "Password reset request",
         html: content // html body
     });
     console.log("Message sent: %s", info.messageId);

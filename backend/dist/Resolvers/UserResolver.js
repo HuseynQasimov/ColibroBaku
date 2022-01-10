@@ -75,10 +75,15 @@ let UserResolver = class UserResolver {
             return { errorMessage: "Something went wrong" };
         }
         const token = (0, uuid_1.v4)();
-        await redis.set("forgot-password" + token, user.id, "ex", 1000 * 60 * 60 * 24);
-        const emailContent = `<a href="http://localhost:3000/reset-password/${token}">Reset password</a>`;
-        await (0, email_1.sendEmail)(email, emailContent);
-        return { userData: user };
+        try {
+            await redis.set("forgot-password" + token, user.id, "ex", 1000 * 60 * 60 * 24);
+            const emailContent = `<a href="http://localhost:3000/user/${token}">Reset password</a>`;
+            await (0, email_1.sendEmail)(email, emailContent);
+            return { userData: user };
+        }
+        catch (error) {
+            return { errorMessage: error.message };
+        }
     }
     async resetPassword(token, newPassword, { redis }) {
         try {

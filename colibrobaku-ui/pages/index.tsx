@@ -1,15 +1,15 @@
+import React from 'react'
 import { Button, Card, CardActionArea, CardActions, CardContent, CardMedia, Grid, Typography } from '@material-ui/core'
 import Layout from '../components/Layout'
-import NextLink from "next/link"
+import NextLink from 'next/link'
 import { useGetProductsQuery } from '../graphql/generated/graphql'
 
-export default function Home() {
-  const {data, loading, error} = useGetProductsQuery()
+export default function Home () {
+  const { data, loading, error } = useGetProductsQuery()
 
   if (error) {
     console.log(error)
-  }
-  else if (loading) {
+  } else if (loading) {
     return <p>Loading...</p>
   }
 

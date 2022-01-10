@@ -83,12 +83,16 @@ export class UserResolver {
 
     const token = v4()
 
-    await redis.set("forgot-password" + token, user.id, "ex", 1000 * 60 * 60 * 24)
+    try {
+      await redis.set("forgot-password" + token, user.id, "ex", 1000 * 60 * 60 * 24)
 
-    const emailContent = `<a href="http://localhost:3000/reset-password/${token}">Reset password</a>`
-    await sendEmail(email, emailContent)
+      const emailContent = `<a href="http://localhost:3000/user/${token}">Reset password</a>`
+      await sendEmail(email, emailContent)
 
-    return { userData: user }
+      return { userData: user }
+    } catch (error:any) {
+      return { errorMessage: error.message }
+    }
   }
 
   @Mutation(returns => UserResponse)

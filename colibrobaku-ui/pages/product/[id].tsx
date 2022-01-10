@@ -2,32 +2,27 @@
 import { useRouter } from 'next/router'
 import React from 'react'
 import Layout from '../../components/Layout'
-import NextLink from "next/link"
-import {Button, Card, Grid, Link, List, ListItem, Typography} from "@material-ui/core"
+import NextLink from 'next/link'
+import { Button, Card, Grid, Link, List, ListItem, Typography } from '@material-ui/core'
 import useStyles from '../../utils/styles'
 import Image from 'next/image'
 import { useGetProductByIdQuery } from '../../graphql/generated/graphql'
 
-
-
-export default function ProductScreen() {
+export default function ProductScreen () {
   const classes = useStyles()
   const router = useRouter()
-  let id = router.query.id?.toString()!
+  const id = router.query.id?.toString()!
 
-  const {data, loading, error} = useGetProductByIdQuery({
-  variables:{id}
+  const { data, loading, error } = useGetProductByIdQuery({
+    variables: { id }
   })
 
-  
   if (loading) {
     return <p>Loading...</p>
+  } else if (!data?.getProductById?.products || data.getProductById.errorMessage) {
+    return <h1>Page not found</h1>
   }
 
-  else if (!data?.getProductById?.products || data.getProductById.errorMessage) {
-    return <p>Something went wrong</p>
-  }
- 
   const product = data.getProductById.products[0]
 
   return (
@@ -46,7 +41,7 @@ export default function ProductScreen() {
         <Grid item md={3} xs={12}>
           <List >
             <ListItem>
-              <Typography component={"h1"}>Model: {product.model}</Typography>
+              <Typography component={'h1'}>Model: {product.model}</Typography>
             </ListItem>
             <ListItem>
               <Typography>Product Code: {product.productCode}</Typography>

@@ -5,59 +5,97 @@ import NextLink from 'next/link'
 import { useLoginMutation } from '../../graphql/generated/graphql'
 import { useRouter } from 'next/router'
 import Cookies from 'js-cookie'
+import { Controller, useForm } from 'react-hook-form'
+import { useSnackbar } from 'notistack'
 
-export default function  Login() {
+export default function Login () {
+  const { handleSubmit, control, formState: { errors } } = useForm()
+  const { enqueueSnackbar, closeSnackbar } = useSnackbar()
+
   const classes = useStyles()
   const router = useRouter()
 
-  const token = Cookies.get("token")
-  
+  const token = Cookies.get('token')
+
   if (token) {
-    router.push("/")
+    router.push('/')
   }
 
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
 
-  const [login]= useLoginMutation({
+  const [login] = useLoginMutation({
     variables: {
       email,
       password
     }
   })
 
-  const submitHandler = async (e:any) => {
-    e.preventDefault()
-    
-    const {data} = await login()
+  const submitHandler = async ({ email, password }) => {
+    closeSnackbar()
+    setEmail(email)
+    setPassword(password)
+
+    const { data } = await login()
 
     if (data?.login.errorMessage) {
-      alert(data?.login.errorMessage)
+      enqueueSnackbar(data?.login.errorMessage, { variant: 'error' })
     }
 
     if (data?.login.userData) {
-      router.push("/")
+      router.push('/')
     }
   }
 
   return (
-      <form onSubmit={submitHandler} className={classes.form}>
+      <form onSubmit={handleSubmit(submitHandler)} className={classes.form}>
         <Typography component="h2" variant="h2">
           Login
         </Typography>
         <List>
           <ListItem>
-            <TextField variant="outlined" fullWidth id="email" label="Email" inputProps={{type: 'email'}}
-            onChange={e => setEmail(e.target.value)}></TextField>
+            <Controller
+              name="email"
+              control={control}
+              defaultValue=""
+              rules={{
+                required: true,
+                pattern: /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$/
+              }}
+              render={({ field }) => (
+                <TextField variant="outlined" fullWidth id="email" label="Email" inputProps={{ type: 'email' }}
+                  error={Boolean(errors.email)}
+                  helperText={errors.email ? errors.email.type === 'pattern' ? 'Email is not valid' : 'Email is required' : ''}
+                  {...field}
+                  >
+                </TextField>
+              )}
+            ></Controller>
+
           </ListItem>
 
           <ListItem>
-            <TextField variant="outlined" fullWidth id="password" label="Password" inputProps={{type: 'password'}}
-            onChange={e => setPassword(e.target.value)}></TextField>
+          <Controller
+              name="password"
+              control={control}
+              defaultValue=""
+              rules={{
+                required: true,
+                minLength: 6
+              }}
+              render={({ field }) => (
+                <TextField variant="outlined" fullWidth id="password" label="Password" inputProps={{ type: 'password' }}
+                  error={Boolean(errors.password)}
+                  helperText={errors.password ? errors.password.type === 'minLength' ? 'Password should be more than 5 character' : 'Password is required' : ''}
+                  {...field}
+                  >
+                </TextField>
+              )}
+            ></Controller>
           </ListItem>
 
           <ListItem>
-            <Button variant="contained" type="submit"  color="primary">
+            <Button variant="contained" type="submit" color="primary">
               Login
             </Button>
           </ListItem>
@@ -68,7 +106,13 @@ export default function  Login() {
               <Link>Register</Link>
             </NextLink>
           </ListItem>
+
+          <ListItem>
+            <NextLink href="/user/forgot-password" passHref>
+              <Link>Forgot password</Link>
+            </NextLink>
+          </ListItem>
         </List>
       </form>
-    )
+  )
 }
