@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import '../styles/globals.css'
 import { ApolloClient, ApolloProvider, InMemoryCache } from '@apollo/client'
-import { StoreContext } from '../utils/userContext'
+import { StoreContext } from '../utils/StoreContext'
 import { SnackbarProvider } from 'notistack'
 
 const client = new ApolloClient({

@@ -5,9 +5,12 @@ import useStyles from '../../utils/styles'
 import NextLink from 'next/link'
 import { useSignUpMutation } from '../../graphql/generated/graphql'
 import { Controller, useForm } from 'react-hook-form'
+import { useSnackbar } from 'notistack'
+import PhoneInput, { isValidPhoneNumber } from 'react-phone-number-input/input'
 
 export default function Register () {
   const { handleSubmit, control, formState: { errors } } = useForm()
+  const { enqueueSnackbar, closeSnackbar } = useSnackbar()
 
   const [firstname, setFirstname] = useState('')
   const [lastname, setLastname] = useState('')
@@ -29,6 +32,8 @@ export default function Register () {
   })
 
   const submitHandler = async ({ firstname, lastname, email, phone, password }) => {
+    closeSnackbar()
+
     setFirstname(firstname)
     setLastname(lastname)
     setEmail(email)
@@ -40,13 +45,13 @@ export default function Register () {
 
       if (data?.signUp.errorMessage) {
         console.log(data?.signUp.errorMessage)
-        alert(data?.signUp.errorMessage)
+        enqueueSnackbar(data?.signUp.errorMessage, { variant: 'error' })
       } else if (data?.signUp.userData) {
         console.log(data?.signUp.userData)
         router.push('/user/login')
       }
     } catch (error: any) {
-      alert(error.message)
+      enqueueSnackbar(error.message, { variant: 'error' })
       console.log(error.message)
     }
   }
@@ -63,15 +68,14 @@ export default function Register () {
               defaultValue=""
               rules={{
                 required: true,
-                pattern: /^[a-z]{3,12}$/,
-                value: /^[a-z]$/
+                pattern: /^[a-zA-Z]{3,14}$/
               }}
               render={({ field }) => (
                 <TextField variant="outlined" fullWidth id="firstname" label="Firstname" inputProps={{ type: 'text' }}
                   error={Boolean(errors.firstname)}
                   helperText={errors.firstname
                     ? errors.firstname.type === 'pattern'
-                      ? 'Firstname length should be more than 2'
+                      ? 'Firstname is not valid'
                       : 'Firstname is required'
                     : ''}
                   {...field}
@@ -88,12 +92,16 @@ export default function Register () {
               defaultValue=""
               rules={{
                 required: true,
-                minLength: 3
+                pattern: /^[a-zA-Z]{3,14}$/
               }}
               render={({ field }) => (
                 <TextField variant="outlined" fullWidth id="lastname" label="Lastname" inputProps={{ type: 'text' }}
                   error={Boolean(errors.lastname)}
-                  helperText={errors.lastname ? errors.lastname.type === 'minLength' ? 'Lastname length should be more than 2' : 'Lastname is required' : ''}
+                  helperText={errors.lastname
+                    ? errors.lastname.type === 'pattern'
+                      ? 'Lastname is not valid'
+                      : 'Lastname is required'
+                    : ''}
                   {...field}
                   >
                 </TextField>
@@ -108,12 +116,16 @@ export default function Register () {
               defaultValue=""
               rules={{
                 required: true,
-                minLength: 10
+                pattern: /^[0-9]{10,10}$/
               }}
               render={({ field }) => (
                 <TextField variant="outlined" fullWidth id="phone" label="Phone" inputProps={{ type: 'text' }}
                   error={Boolean(errors.phone)}
-                  helperText={errors.phone ? errors.phone.type === 'minLength' ? 'Phone length should be 10 charachter' : 'Phone is required' : ''}
+                  helperText={errors.phone
+                    ? errors.phone.type === 'pattern'
+                      ? 'Example: 0XX XXX XX XX'
+                      : 'Phone is required'
+                    : ''}
                   {...field}
                   >
                 </TextField>

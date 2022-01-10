@@ -33,17 +33,23 @@ export default function Login () {
 
   const submitHandler = async ({ email, password }) => {
     closeSnackbar()
+
     setEmail(email)
     setPassword(password)
 
-    const { data } = await login()
+    try {
+      const { data } = await login()
 
-    if (data?.login.errorMessage) {
-      enqueueSnackbar(data?.login.errorMessage, { variant: 'error' })
-    }
+      if (data?.login.errorMessage) {
+        enqueueSnackbar(data?.login.errorMessage, { variant: 'error' })
+      }
 
-    if (data?.login.userData) {
-      router.push('/')
+      if (data?.login.userData) {
+        console.log(data?.login.userData)
+        router.push('/')
+      }
+    } catch (error) {
+      alert('Something went wrong')
     }
   }
 
@@ -63,7 +69,7 @@ export default function Login () {
                 pattern: /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$/
               }}
               render={({ field }) => (
-                <TextField variant="outlined" fullWidth id="email" label="Email" inputProps={{ type: 'email' }}
+                <TextField variant="outlined" fullWidth id="email" label="Email" inputProps={{ type: 'text' }}
                   error={Boolean(errors.email)}
                   helperText={errors.email ? errors.email.type === 'pattern' ? 'Email is not valid' : 'Email is required' : ''}
                   {...field}

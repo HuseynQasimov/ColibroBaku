@@ -4,7 +4,7 @@ import Head from 'next/head'
 import NextLink from 'next/link'
 import { AppBar, Button, Container, Link, Menu, MenuItem, Toolbar, Typography } from '@material-ui/core'
 import useStyles from '../utils/styles'
-import { StoreContext } from '../utils/userContext'
+import { StoreContext } from '../utils/StoreContext'
 import jwtDecode, { JwtPayload } from 'jwt-decode'
 import Cookies from 'js-cookie'
 import { useLogoutLazyQuery } from '../graphql/generated/graphql'
@@ -20,8 +20,9 @@ export default function Layout ({ title, description, children }) {
 
   if (token) {
     const decoded: JwtPayload = jwtDecode(token)
-    const payload = Object.values(decoded)[1]
-    setValue(payload)
+
+    const firtsname = Object.values(decoded)[1]
+    setValue(firtsname)
   }
 
   const [anchorEl, setAnchorEl] = useState(null)
@@ -34,12 +35,19 @@ export default function Layout ({ title, description, children }) {
   }
 
   const logoutClickHandler = async () => {
-    setAnchorEl(null)
-    await logout()
-    console.log(data)
-    console.log(loading)
-    console.log(error)
-    router.push('/user/login')
+    try {
+      setAnchorEl(null)
+
+      await logout()
+
+      console.log(data)
+      console.log(loading)
+      console.log(error)
+
+      router.push('/user/login')
+    } catch (error) {
+      alert('Something webt wrong')
+    }
   }
 
   const classes = useStyles()
@@ -52,16 +60,18 @@ export default function Layout ({ title, description, children }) {
     <AppBar position="static" className={classes.navbar}>
       <Toolbar>
         <NextLink href="/" passHref>
-          <Link>
+          <Button>
             <Typography className={classes.brand}>colibrobaku</Typography>
-          </Link>
+          </Button>
         </NextLink>
         <div className={classes.grow}></div>
         <div>
           {value
             ? (
             <NextLink href="/user/orders" passHref>
-              <Link>Orders</Link>
+                <Button className={classes.navbarButton}>
+                  <Link>Orders</Link>
+                </Button>
             </NextLink>
               )
             : ('')}

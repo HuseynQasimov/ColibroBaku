@@ -10,7 +10,7 @@ const useStyles = makeStyles({
   },
   brand: {
     fontWeight: 'bold',
-    fontSize: '1.5rem'
+    fontSize: '1.2rem'
   },
   grow: {
     flexGrow: 1
@@ -26,7 +26,7 @@ const useStyles = makeStyles({
     marginBottom: 10
   },
   form: {
-    maxWidth: 300,
+    maxWidth: 350,
     margin: '0 auto'
   },
   navbarButton: {

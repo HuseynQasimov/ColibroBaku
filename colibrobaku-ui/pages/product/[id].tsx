@@ -1,16 +1,18 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import { useRouter } from 'next/router'
-import React from 'react'
+import React, { useContext } from 'react'
 import Layout from '../../components/Layout'
 import NextLink from 'next/link'
 import { Button, Card, Grid, Link, List, ListItem, Typography } from '@material-ui/core'
 import useStyles from '../../utils/styles'
 import Image from 'next/image'
 import { useGetProductByIdQuery } from '../../graphql/generated/graphql'
+import { StoreContext } from '../../utils/StoreContext'
 
 export default function ProductScreen () {
   const classes = useStyles()
   const router = useRouter()
+  const { value, setValue } = useContext(StoreContext)
   const id = router.query.id?.toString()!
 
   const { data, loading, error } = useGetProductByIdQuery({
@@ -21,6 +23,14 @@ export default function ProductScreen () {
     return <p>Loading...</p>
   } else if (!data?.getProductById?.products || data.getProductById.errorMessage) {
     return <h1>Page not found</h1>
+  }
+
+  const productOrderHandler = () => {
+    if (!value) {
+      router.push('/user/login')
+    } else {
+      router.push('/user/orders')
+    }
   }
 
   const product = data.getProductById.products[0]
@@ -43,15 +53,15 @@ export default function ProductScreen () {
             <ListItem>
               <Typography component={'h1'}>Model: {product.model}</Typography>
             </ListItem>
+
             <ListItem>
               <Typography>Product Code: {product.productCode}</Typography>
             </ListItem>
-            {/* <ListItem>
-              <Typography>Price: {product.price} AZN</Typography>
-            </ListItem> */}
+
             <ListItem>
               <Typography>Title: {product.title}</Typography>
             </ListItem>
+
             <ListItem>
               <Typography>Description: {product.description}</Typography>
             </ListItem>
@@ -70,8 +80,9 @@ export default function ProductScreen () {
                   </Grid>
                 </Grid>
               </ListItem>
+
               <ListItem>
-                <Button fullWidth variant="contained" color="primary">
+                <Button fullWidth variant="contained" color="primary" onClick={productOrderHandler}>
                   Order
                 </Button>
               </ListItem>
