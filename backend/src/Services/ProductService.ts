@@ -2,15 +2,18 @@ import { getRepository } from "typeorm"
 import { Product } from "../Models/Entities/ProductEntity"
 
 export class ProductService {
-  async add (model: string, title: string, description: string, price: number, image: string, productCode: string) {
+  async add (model: string, title: string, description: string, price: number, imageUrl: string, productCode: string) {
     const product = await Product.findOne({ where: { productCode } })
     if (product) {
       throw new Error("Duplicate product")
     }
 
-    const newProduct = await Product.create({ model, title, description, price, image, productCode }).save()
-
-    return newProduct
+    try {
+      const newProduct = await Product.create({ model, title, description, price, imageUrl, productCode }).save()
+      return newProduct
+    } catch (error: any) {
+      throw new Error(error.message)
+    }
   }
 
   async getProducts () {
@@ -35,6 +38,15 @@ export class ProductService {
       throw new Error("Product not found")
     }
 
+    return product
+  }
+
+  async delete (id: string) {
+    const productRepository = getRepository(Product)
+    const product = await productRepository.delete(id)
+    if (product.affected === 0) {
+      throw new Error("Product not deleted")
+    }
     return product
   }
 }

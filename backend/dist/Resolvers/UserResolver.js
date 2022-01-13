@@ -35,14 +35,14 @@ let UserResolver = class UserResolver {
         const user = await UserEntity_1.User.findOne({ where: { email: payload.email } });
         return { userData: user };
     }
-    async signUp({ firstname, lastname, phone, email, password }) {
+    async signUp({ firstname, lastname, phone, email, password, isAdmin }) {
         const user = await UserEntity_1.User.findOne({ where: { email } });
         if (user) {
             return { errorMessage: "Email already signed up" };
         }
         try {
             const userInstance = new UserService_1.UserService();
-            const resp = await userInstance.signUpService(firstname, lastname, phone, email, password);
+            const resp = await userInstance.signUpService(firstname, lastname, phone, email, password, isAdmin);
             return { userData: resp };
         }
         catch (err) {

@@ -26,5 +26,20 @@ router.post("/refresh-token", async (req, res) => {
     }
     return res.send({ ok: true, accessToken: (0, createToken_1.createRefreshToken)(user) });
 });
+router.post("/upload", (req, res) => {
+    if (req.files === null) {
+        return res.status(400).json({ message: "No file uploaded" });
+    }
+    const file = req.files?.file;
+    const uploadDir = "C:/Projects/ColibroBaku/colibrobaku-ui/public/images";
+    // eslint-disable-next-line node/no-path-concat
+    file.mv(`${uploadDir}/${file.name}`, (err) => {
+        if (err) {
+            console.log(err);
+            return res.status(500).send(err);
+        }
+        res.json({ fileName: file.name, url: `/images/${file.name}` });
+    });
+});
 exports.default = router;
 //# sourceMappingURL=restRoute.js.map

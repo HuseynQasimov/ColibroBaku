@@ -30,7 +30,7 @@ class UserService {
         const allUsers = await userRepository.find({});
         return allUsers;
     }
-    async signUpService(firstname, lastname, phone, email, password) {
+    async signUpService(firstname, lastname, phone, email, password, isAdmin) {
         const hashedPass = await bcrypt.hash(password, 12);
         try {
             const user = await UserEntity_1.User.create({
@@ -38,7 +38,8 @@ class UserService {
                 lastname,
                 phone,
                 email,
-                password: hashedPass
+                password: hashedPass,
+                isAdmin
             }).save();
             return user;
         }

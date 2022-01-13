@@ -44,7 +44,7 @@ export default function ProductScreen () {
       </div>
       <Grid container spacing={1}>
         <Grid item md={6} xs={12}>
-          <Image src={product.image} alt={product.model} width={140} height={140} layout='responsive'>
+          <Image src={product.imageUrl} alt={product.model} width={140} height={140} layout='responsive'>
 
           </Image>
         </Grid>

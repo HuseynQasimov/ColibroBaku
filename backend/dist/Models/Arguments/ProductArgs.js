@@ -41,7 +41,7 @@ __decorate([
 __decorate([
     (0, type_graphql_1.Field)(),
     __metadata("design:type", String)
-], productData.prototype, "image", void 0);
+], productData.prototype, "imageUrl", void 0);
 productData = __decorate([
     (0, type_graphql_1.ArgsType)()
 ], productData);

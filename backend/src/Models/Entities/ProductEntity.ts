@@ -30,5 +30,5 @@ export class Product extends BaseEntity {
 
   @Field()
   @Column("text")
-  image: string
+  imageUrl: string
 }

@@ -27,6 +27,7 @@ export class User extends BaseEntity {
   @Column()
   password: string
 
-  // @Field()
-  // accessToken: string
+  @Field()
+  @Column()
+  isAdmin: Boolean
 }

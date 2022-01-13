@@ -7,6 +7,7 @@ import { config } from "dotenv"
 import cookieParser from "cookie-parser"
 import cors from "cors"
 import Redis from "ioredis"
+import fileUpload from "express-fileupload"
 
 import { UserResolver } from "./Resolvers/UserResolver"
 import router from "./Helpers/restRoute"
@@ -18,10 +19,11 @@ const main = async () => {
   const redis = new Redis()
 
   app.use(cookieParser())
+  app.use(fileUpload())
 
   app.use(cors({
     credentials: true,
-    origin: "http://localhost:3000"
+    origin: ["http://localhost:3000"]
   }))
 
   app.use(router)
@@ -36,6 +38,11 @@ const main = async () => {
     context: ({ req, res }) => {
       return ({ req, res, redis })
     }
+    // formatError: (err) => {
+    //   if (err?.extensions?.code) {
+    //     return err.extensions.code
+    //   }
+    // }
   })
 
   await apolloServer.start()

@@ -29,9 +29,20 @@ const useStyles = makeStyles({
     maxWidth: 350,
     margin: '0 auto'
   },
+  productForm: {
+    width: 800,
+    margin: '0 auto'
+  },
   navbarButton: {
     color: '#ffffff',
     textTransform: 'initial'
+  },
+  errorHeader: {
+    color: '#FF0000',
+    textAlign: 'center'
+  },
+  dialogPaper: {
+    width: '80'
   }
 })
 

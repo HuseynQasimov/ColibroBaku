@@ -8,7 +8,7 @@
       model,
       productCode,
       description,
-      image
+      imageUrl
       }
     }
  }

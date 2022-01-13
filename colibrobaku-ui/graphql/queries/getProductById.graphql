@@ -8,7 +8,7 @@ query GetProductById($id: String!){
       productCode
       description
       price
-      image
+      imageUrl
     }
   }
 }

@@ -12,7 +12,7 @@ import { useRouter } from 'next/router'
 
 export default function Layout ({ title, description, children }) {
   const router = useRouter()
-  const { value, setValue } = useContext(StoreContext)
+  const { value, setValue, isAdmin, setIsAdmin } = useContext(StoreContext)
 
   const [logout, { data, loading, error }] = useLogoutLazyQuery()
 
@@ -23,6 +23,9 @@ export default function Layout ({ title, description, children }) {
 
     const firtsname = Object.values(decoded)[1]
     setValue(firtsname)
+
+    const admin = Object.values(decoded)[2]
+    setIsAdmin(admin)
   }
 
   const [anchorEl, setAnchorEl] = useState(null)
@@ -46,7 +49,15 @@ export default function Layout ({ title, description, children }) {
 
       router.push('/user/login')
     } catch (error) {
-      alert('Something webt wrong')
+      alert('Something went wrong')
+    }
+  }
+
+  const menuAdminClickHandler = async () => {
+    try {
+      router.push('/admin/dashboard')
+    } catch (error) {
+      alert('Something went wrong')
     }
   }
 
@@ -93,8 +104,21 @@ export default function Layout ({ title, description, children }) {
           open={Boolean(anchorEl)}
           onClose={loginMenuCloseHandler}
         >
-          <MenuItem onClick={loginMenuCloseHandler}>Profile</MenuItem>
-          <MenuItem onClick={logoutClickHandler}>Logout</MenuItem>
+          {isAdmin
+            ? (
+            <>
+              <MenuItem onClick={menuAdminClickHandler}>Admin</MenuItem>
+              <MenuItem onClick={loginMenuCloseHandler}>Profile</MenuItem>
+              <MenuItem onClick={logoutClickHandler}>Logout</MenuItem>
+            </>
+              )
+            : (
+            <>
+              <MenuItem onClick={loginMenuCloseHandler}>Profile</MenuItem>
+              <MenuItem onClick={logoutClickHandler}>Logout</MenuItem>
+            </>
+              )}
+
         </Menu>
         </>)
             : (<NextLink href="/user/login" passHref>

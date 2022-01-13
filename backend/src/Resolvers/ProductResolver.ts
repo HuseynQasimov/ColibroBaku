@@ -6,15 +6,15 @@ import { ProductService } from "../Services/ProductService"
 
 @Resolver(Product)
 export class ProductResolver {
-  @Mutation(returns => Boolean)
-  async addProduct (@Args() { model, title, description, price, image, productCode }: productData):
-  Promise<Boolean> {
+  @Mutation(returns => ProductResponse)
+  async addProduct (@Args() { model, title, description, price, imageUrl, productCode }: productData):
+  Promise<ProductResponse> {
     try {
       const productInstance = new ProductService()
-      await productInstance.add(model, title, description, price, image, productCode)
-      return true
-    } catch (err) {
-      return false
+      const resp = await productInstance.add(model, title, description, price, imageUrl, productCode)
+      return { products: [resp] }
+    } catch (err: any) {
+      return { errorMessage: err.message }
     }
   }
 
@@ -23,10 +23,16 @@ export class ProductResolver {
   //   return true
   // }
 
-  // @Mutation()
-  // async deleteProduct () {
-  //   return true
-  // }
+  @Mutation(returns => Boolean)
+  async deleteProduct (@Arg("id") id: string): Promise<Boolean> {
+    try {
+      const productInstance = new ProductService()
+      await productInstance.delete(id)
+      return true
+    } catch (error) {
+      return false
+    }
+  }
 
   @Query(returns => ProductResponse, { nullable: true })
   async getAllProducts () {

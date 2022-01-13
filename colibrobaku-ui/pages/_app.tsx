@@ -12,6 +12,7 @@ const client = new ApolloClient({
 
 function App ({ Component, pageProps }) {
   const [value, setValue] = useState('')
+  const [isAdmin, setIsAdmin] = useState('')
 
   useEffect(() => {
     const jssStyles = document.querySelector('#jss-server-side')
@@ -22,13 +23,14 @@ function App ({ Component, pageProps }) {
 
   return (
     <ApolloProvider client={client}>
-      <SnackbarProvider anchorOrigin={{ vertical: 'top', horizontal: 'center' }}>
-        <StoreContext.Provider value={{ value, setValue }}>
+      <SnackbarProvider maxSnack={3}>
+        <StoreContext.Provider value={{ value, setValue, isAdmin, setIsAdmin }}>
           <Component {...pageProps}/>
         </StoreContext.Provider>
       </SnackbarProvider>
     </ApolloProvider>
   )
 }
+// anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
 
 export default App

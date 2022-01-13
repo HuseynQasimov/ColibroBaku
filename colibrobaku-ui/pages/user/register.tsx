@@ -6,7 +6,7 @@ import NextLink from 'next/link'
 import { useSignUpMutation } from '../../graphql/generated/graphql'
 import { Controller, useForm } from 'react-hook-form'
 import { useSnackbar } from 'notistack'
-import PhoneInput, { isValidPhoneNumber } from 'react-phone-number-input/input'
+import MaterialUiPhoneNumber from 'material-ui-phone-number'
 
 export default function Register () {
   const { handleSubmit, control, formState: { errors } } = useForm()
@@ -116,19 +116,29 @@ export default function Register () {
               defaultValue=""
               rules={{
                 required: true,
-                pattern: /^[0-9]{10,10}$/
+                maxLength: 13
+                // pattern: /^[0-9]{9,12}$/
               }}
               render={({ field }) => (
-                <TextField variant="outlined" fullWidth id="phone" label="Phone" inputProps={{ type: 'text' }}
+                <MaterialUiPhoneNumber disableDropdown defaultCountry="az" variant="outlined" fullWidth id="phone" label="Phone"
                   error={Boolean(errors.phone)}
                   helperText={errors.phone
-                    ? errors.phone.type === 'pattern'
-                      ? 'Example: 0XX XXX XX XX'
+                    ? errors.phone.type === 'maxLength'
+                      ? 'Maximum length is 13'
                       : 'Phone is required'
                     : ''}
                   {...field}
-                  >
-                </TextField>
+                  />
+                // <TextField variant="outlined" fullWidth id="phone" label="Phone" inputProps={{ type: 'text' }}
+                //   error={Boolean(errors.phone)}
+                //   helperText={errors.phone
+                //     ? errors.phone.type === 'pattern'
+                //       ? 'Example: 0XX XXX XX XX'
+                //       : 'Phone is required'
+                //     : ''}
+                //   {...field}
+                //   >
+                // </TextField>
               )}
             ></Controller>
           </ListItem>

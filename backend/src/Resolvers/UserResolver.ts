@@ -32,7 +32,7 @@ export class UserResolver {
   }
 
   @Mutation(returns => UserResponse)
-  async signUp (@Args() { firstname, lastname, phone, email, password }: signUpData): Promise<UserResponse> {
+  async signUp (@Args() { firstname, lastname, phone, email, password, isAdmin }: signUpData): Promise<UserResponse> {
     const user = await User.findOne({ where: { email } })
     if (user) {
       return { errorMessage: "Email already signed up" }
@@ -40,7 +40,7 @@ export class UserResolver {
 
     try {
       const userInstance = new UserService()
-      const resp = await userInstance.signUpService(firstname, lastname, phone, email, password)
+      const resp = await userInstance.signUpService(firstname, lastname, phone, email, password, isAdmin)
       return { userData: resp }
     } catch (err: any) {
       return { errorMessage: err.message }

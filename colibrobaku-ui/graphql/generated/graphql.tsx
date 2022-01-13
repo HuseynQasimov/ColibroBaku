@@ -17,7 +17,8 @@ export type Scalars = {
 
 export type Mutation = {
   __typename?: 'Mutation';
-  addProduct: Scalars['Boolean'];
+  addProduct: ProductResponse;
+  deleteProduct: Scalars['Boolean'];
   forgotPassword: UserResponse;
   login: UserResponse;
   resetPassword: UserResponse;
@@ -27,11 +28,16 @@ export type Mutation = {
 
 export type MutationAddProductArgs = {
   description: Scalars['String'];
-  image: Scalars['String'];
+  imageUrl: Scalars['String'];
   model: Scalars['String'];
   price: Scalars['Int'];
   productCode: Scalars['String'];
   title: Scalars['String'];
+};
+
+
+export type MutationDeleteProductArgs = {
+  id: Scalars['String'];
 };
 
 
@@ -55,6 +61,7 @@ export type MutationResetPasswordArgs = {
 export type MutationSignUpArgs = {
   email: Scalars['String'];
   firstname: Scalars['String'];
+  isAdmin?: InputMaybe<Scalars['Boolean']>;
   lastname: Scalars['String'];
   password: Scalars['String'];
   phone: Scalars['String'];
@@ -64,7 +71,7 @@ export type Product = {
   __typename?: 'Product';
   description: Scalars['String'];
   id: Scalars['ID'];
-  image: Scalars['String'];
+  imageUrl: Scalars['String'];
   model: Scalars['String'];
   price: Scalars['Int'];
   productCode: Scalars['String'];
@@ -96,6 +103,7 @@ export type User = {
   email: Scalars['String'];
   firstname: Scalars['String'];
   id: Scalars['ID'];
+  isAdmin: Scalars['Boolean'];
   lastname: Scalars['String'];
   phone: Scalars['String'];
 };
@@ -105,6 +113,25 @@ export type UserResponse = {
   errorMessage?: Maybe<Scalars['String']>;
   userData?: Maybe<User>;
 };
+
+export type AddProductMutationVariables = Exact<{
+  model: Scalars['String'];
+  productCode: Scalars['String'];
+  title: Scalars['String'];
+  description: Scalars['String'];
+  price: Scalars['Int'];
+  imageUrl: Scalars['String'];
+}>;
+
+
+export type AddProductMutation = { __typename?: 'Mutation', addProduct: { __typename?: 'ProductResponse', errorMessage?: string | null | undefined, products?: Array<{ __typename?: 'Product', id: string }> | null | undefined } };
+
+export type DeleteProductMutationVariables = Exact<{
+  id: Scalars['String'];
+}>;
+
+
+export type DeleteProductMutation = { __typename?: 'Mutation', deleteProduct: boolean };
 
 export type ForgotPasswordMutationVariables = Exact<{
   email: Scalars['String'];
@@ -145,12 +172,17 @@ export type GetProductByIdQueryVariables = Exact<{
 }>;
 
 
-export type GetProductByIdQuery = { __typename?: 'Query', getProductById?: { __typename?: 'ProductResponse', errorMessage?: string | null | undefined, products?: Array<{ __typename?: 'Product', id: string, title: string, model: string, productCode: string, description: string, price: number, image: string }> | null | undefined } | null | undefined };
+export type GetProductByIdQuery = { __typename?: 'Query', getProductById?: { __typename?: 'ProductResponse', errorMessage?: string | null | undefined, products?: Array<{ __typename?: 'Product', id: string, title: string, model: string, productCode: string, description: string, price: number, imageUrl: string }> | null | undefined } | null | undefined };
 
 export type GetProductsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetProductsQuery = { __typename?: 'Query', getAllProducts?: { __typename?: 'ProductResponse', errorMessage?: string | null | undefined, products?: Array<{ __typename?: 'Product', id: string, title: string, price: number, model: string, productCode: string, description: string, image: string }> | null | undefined } | null | undefined };
+export type GetProductsQuery = { __typename?: 'Query', getAllProducts?: { __typename?: 'ProductResponse', errorMessage?: string | null | undefined, products?: Array<{ __typename?: 'Product', id: string, title: string, price: number, model: string, productCode: string, description: string, imageUrl: string }> | null | undefined } | null | undefined };
+
+export type GetAllUsersQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetAllUsersQuery = { __typename?: 'Query', getAllUsers?: Array<{ __typename?: 'User', firstname: string, lastname: string, phone: string, email: string }> | null | undefined };
 
 export type LogoutQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -158,6 +190,85 @@ export type LogoutQueryVariables = Exact<{ [key: string]: never; }>;
 export type LogoutQuery = { __typename?: 'Query', logout: boolean };
 
 
+export const AddProductDocument = gql`
+    mutation AddProduct($model: String!, $productCode: String!, $title: String!, $description: String!, $price: Int!, $imageUrl: String!) {
+  addProduct(
+    model: $model
+    productCode: $productCode
+    title: $title
+    description: $description
+    price: $price
+    imageUrl: $imageUrl
+  ) {
+    errorMessage
+    products {
+      id
+    }
+  }
+}
+    `;
+export type AddProductMutationFn = Apollo.MutationFunction<AddProductMutation, AddProductMutationVariables>;
+
+/**
+ * __useAddProductMutation__
+ *
+ * To run a mutation, you first call `useAddProductMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAddProductMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [addProductMutation, { data, loading, error }] = useAddProductMutation({
+ *   variables: {
+ *      model: // value for 'model'
+ *      productCode: // value for 'productCode'
+ *      title: // value for 'title'
+ *      description: // value for 'description'
+ *      price: // value for 'price'
+ *      imageUrl: // value for 'imageUrl'
+ *   },
+ * });
+ */
+export function useAddProductMutation(baseOptions?: Apollo.MutationHookOptions<AddProductMutation, AddProductMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<AddProductMutation, AddProductMutationVariables>(AddProductDocument, options);
+      }
+export type AddProductMutationHookResult = ReturnType<typeof useAddProductMutation>;
+export type AddProductMutationResult = Apollo.MutationResult<AddProductMutation>;
+export type AddProductMutationOptions = Apollo.BaseMutationOptions<AddProductMutation, AddProductMutationVariables>;
+export const DeleteProductDocument = gql`
+    mutation DeleteProduct($id: String!) {
+  deleteProduct(id: $id)
+}
+    `;
+export type DeleteProductMutationFn = Apollo.MutationFunction<DeleteProductMutation, DeleteProductMutationVariables>;
+
+/**
+ * __useDeleteProductMutation__
+ *
+ * To run a mutation, you first call `useDeleteProductMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteProductMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteProductMutation, { data, loading, error }] = useDeleteProductMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useDeleteProductMutation(baseOptions?: Apollo.MutationHookOptions<DeleteProductMutation, DeleteProductMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<DeleteProductMutation, DeleteProductMutationVariables>(DeleteProductDocument, options);
+      }
+export type DeleteProductMutationHookResult = ReturnType<typeof useDeleteProductMutation>;
+export type DeleteProductMutationResult = Apollo.MutationResult<DeleteProductMutation>;
+export type DeleteProductMutationOptions = Apollo.BaseMutationOptions<DeleteProductMutation, DeleteProductMutationVariables>;
 export const ForgotPasswordDocument = gql`
     mutation ForgotPassword($email: String!) {
   forgotPassword(email: $email) {
@@ -328,7 +439,7 @@ export const GetProductByIdDocument = gql`
       productCode
       description
       price
-      image
+      imageUrl
     }
   }
 }
@@ -372,7 +483,7 @@ export const GetProductsDocument = gql`
       model
       productCode
       description
-      image
+      imageUrl
     }
   }
 }
@@ -404,6 +515,43 @@ export function useGetProductsLazyQuery(baseOptions?: Apollo.LazyQueryHookOption
 export type GetProductsQueryHookResult = ReturnType<typeof useGetProductsQuery>;
 export type GetProductsLazyQueryHookResult = ReturnType<typeof useGetProductsLazyQuery>;
 export type GetProductsQueryResult = Apollo.QueryResult<GetProductsQuery, GetProductsQueryVariables>;
+export const GetAllUsersDocument = gql`
+    query GetAllUsers {
+  getAllUsers {
+    firstname
+    lastname
+    phone
+    email
+  }
+}
+    `;
+
+/**
+ * __useGetAllUsersQuery__
+ *
+ * To run a query within a React component, call `useGetAllUsersQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetAllUsersQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetAllUsersQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetAllUsersQuery(baseOptions?: Apollo.QueryHookOptions<GetAllUsersQuery, GetAllUsersQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetAllUsersQuery, GetAllUsersQueryVariables>(GetAllUsersDocument, options);
+      }
+export function useGetAllUsersLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetAllUsersQuery, GetAllUsersQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetAllUsersQuery, GetAllUsersQueryVariables>(GetAllUsersDocument, options);
+        }
+export type GetAllUsersQueryHookResult = ReturnType<typeof useGetAllUsersQuery>;
+export type GetAllUsersLazyQueryHookResult = ReturnType<typeof useGetAllUsersLazyQuery>;
+export type GetAllUsersQueryResult = Apollo.QueryResult<GetAllUsersQuery, GetAllUsersQueryVariables>;
 export const LogoutDocument = gql`
     query Logout {
   logout

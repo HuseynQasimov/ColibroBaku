@@ -12,7 +12,7 @@ export class signUpData {
   lastname: string
 
   @Field()
-  @Length(10, 12)
+  @Length(13)
   phone: string
 
   @Field()
@@ -22,6 +22,9 @@ export class signUpData {
   @Field()
   @Length(6, 24)
   password: string
+
+  @Field({ defaultValue: false, nullable: true })
+  isAdmin: Boolean
 }
 
 @ArgsType()
