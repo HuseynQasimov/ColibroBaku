@@ -29,10 +29,16 @@ let ProductResolver = class ProductResolver {
             return { errorMessage: err.message };
         }
     }
-    // @Mutation()
-    // async updateProduct () {
-    //   return true
-    // }
+    async updateProduct({ model, title, description, price, imageUrl, productCode }, id) {
+        try {
+            const productInstance = new ProductService_1.ProductService();
+            const resp = await productInstance.update(id, model, title, description, price, imageUrl, productCode);
+            return { products: [resp] };
+        }
+        catch (error) {
+            return { errorMessage: error.message };
+        }
+    }
     async deleteProduct(id) {
         try {
             const productInstance = new ProductService_1.ProductService();
@@ -71,6 +77,14 @@ __decorate([
     __metadata("design:paramtypes", [ProductArgs_1.productData]),
     __metadata("design:returntype", Promise)
 ], ProductResolver.prototype, "addProduct", null);
+__decorate([
+    (0, type_graphql_1.Mutation)(returns => productResponse_1.ProductResponse),
+    __param(0, (0, type_graphql_1.Args)()),
+    __param(1, (0, type_graphql_1.Arg)("id")),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [ProductArgs_1.productData, String]),
+    __metadata("design:returntype", Promise)
+], ProductResolver.prototype, "updateProduct", null);
 __decorate([
     (0, type_graphql_1.Mutation)(returns => Boolean),
     __param(0, (0, type_graphql_1.Arg)("id")),

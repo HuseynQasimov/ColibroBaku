@@ -59,6 +59,11 @@ let UserResolver = class UserResolver {
             return { errorMessage: err.message };
         }
     }
+    async getUserOrders(id) {
+        const userInstance = new UserService_1.UserService();
+        const resp = await userInstance.getOrders(id);
+        return resp;
+    }
     logout({ res }) {
         try {
             res.clearCookie("token");
@@ -131,6 +136,13 @@ __decorate([
     __metadata("design:paramtypes", [Object, UserArgs_1.loginData]),
     __metadata("design:returntype", Promise)
 ], UserResolver.prototype, "login", null);
+__decorate([
+    (0, type_graphql_1.Query)(() => UserEntity_1.User),
+    __param(0, (0, type_graphql_1.Arg)("id")),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], UserResolver.prototype, "getUserOrders", null);
 __decorate([
     (0, type_graphql_1.Query)(returns => Boolean),
     __param(0, (0, type_graphql_1.Ctx)()),

@@ -67,7 +67,7 @@ export default function Products () {
   return (
     <Layout title="Products">
       <Grid container spacing={1}>
-        <Grid item md={3} xs={12}>
+        <Grid item md={2} xs={12}>
           <Card className={classes.section}>
             <List>
               <NextLink href="/admin/dashboard" passHref>
@@ -93,7 +93,7 @@ export default function Products () {
             </List>
           </Card>
         </Grid>
-        <Grid item md={9} xs={12}>
+        <Grid item md={10} xs={12}>
           <Card className={classes.section}>
             <List>
               <ListItem>
@@ -144,7 +144,7 @@ export default function Products () {
                             <TableCell>{product.price} AZN</TableCell>
                             <TableCell>
                               <NextLink
-                                href={`/admin/product/update-${product.id}`}
+                                href={`/admin/product/${product.id}`}
                                 passHref
                               >
                                 <Button size="small" variant="contained">

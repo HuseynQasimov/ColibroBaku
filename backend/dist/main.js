@@ -16,6 +16,8 @@ const express_fileupload_1 = __importDefault(require("express-fileupload"));
 const UserResolver_1 = require("./Resolvers/UserResolver");
 const restRoute_1 = __importDefault(require("./Helpers/restRoute"));
 const ProductResolver_1 = require("./Resolvers/ProductResolver");
+const OrderResolver_1 = require("./Resolvers/OrderResolver");
+const BasketResolver_1 = require("./Resolvers/BasketResolver");
 (0, dotenv_1.config)();
 const main = async () => {
     const app = (0, express_1.default)();
@@ -29,7 +31,7 @@ const main = async () => {
     app.use(restRoute_1.default);
     await (0, typeorm_1.createConnection)();
     const schema = await (0, type_graphql_1.buildSchema)({
-        resolvers: [UserResolver_1.UserResolver, ProductResolver_1.ProductResolver]
+        resolvers: [UserResolver_1.UserResolver, ProductResolver_1.ProductResolver, OrderResolver_1.OrderResolver, BasketResolver_1.BasketResolver]
     });
     const apolloServer = new apollo_server_express_1.ApolloServer({
         schema,

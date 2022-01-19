@@ -17,6 +17,19 @@ class ProductService {
             throw new Error(error.message);
         }
     }
+    async update(id, model, title, description, price, imageUrl, productCode) {
+        try {
+            const product = await ProductEntity_1.Product.findOne(id);
+            if (!product) {
+                throw new Error("Product is not found");
+            }
+            await ProductEntity_1.Product.update(product, { model, title, description, price, imageUrl, productCode });
+            return product;
+        }
+        catch (error) {
+            return error.message;
+        }
+    }
     async getProducts() {
         try {
             const productRepository = (0, typeorm_1.getRepository)(ProductEntity_1.Product);

@@ -16,6 +16,21 @@ export class ProductService {
     }
   }
 
+  async update (id: string, model: string, title: string, description:
+    string, price: number, imageUrl: string, productCode: string) {
+    try {
+      const product = await Product.findOne(id)
+      if (!product) {
+        throw new Error("Product is not found")
+      }
+
+      await Product.update(product, { model, title, description, price, imageUrl, productCode })
+      return product
+    } catch (error: any) {
+      return error.message
+    }
+  }
+
   async getProducts () {
     try {
       const productRepository = getRepository(Product)

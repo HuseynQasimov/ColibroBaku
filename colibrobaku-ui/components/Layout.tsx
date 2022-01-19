@@ -2,7 +2,7 @@
 import React, { useContext, useState } from 'react'
 import Head from 'next/head'
 import NextLink from 'next/link'
-import { AppBar, Button, Container, Link, Menu, MenuItem, Toolbar, Typography } from '@material-ui/core'
+import { AppBar, Box, Button, Container, Grid, Link, Menu, MenuItem, Toolbar, Typography } from '@material-ui/core'
 import useStyles from '../utils/styles'
 import { StoreContext } from '../utils/StoreContext'
 import jwtDecode, { JwtPayload } from 'jwt-decode'
@@ -65,6 +65,7 @@ export default function Layout ({ title, description, children }) {
   return (
   <div>
     <Head>
+      <link rel="icon" href="favicon.png" type="image/png"></link>
       <title>{title ? `${title} - ColibroBaku` : 'ColibroBaku'}</title>
       {description && <meta name="description" content={description}></meta>}
     </Head>
@@ -132,7 +133,8 @@ export default function Layout ({ title, description, children }) {
       {children}
     </Container>
     <footer className={classes.footer}>
-      <Typography>All rights reserved. ColibroBaku.</Typography>
+
+      <Typography>All rights reserved. ColibroBaku &copy;</Typography>
     </footer>
   </div>
   )

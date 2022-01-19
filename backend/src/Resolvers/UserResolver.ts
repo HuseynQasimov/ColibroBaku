@@ -8,6 +8,7 @@ import { loginData, signUpData } from "../Models/Arguments/UserArgs"
 import { User } from "../Models/Entities/UserEntity"
 import { UserService } from "../Services/UserService"
 import { sendEmail } from "../Helpers/email"
+import { Order } from "../Models/Entities/OrderEntity"
 
 // type UserResponse = User | errorObject | String
 
@@ -50,7 +51,7 @@ export class UserResolver {
   @Mutation(returns => UserResponse)
   async login (
     @Ctx() { res }: Context,
-    @Args() { email, password }: loginData): Promise<UserResponse> {
+      @Args() { email, password }: loginData): Promise<UserResponse> {
     try {
       const userInstance = new UserService()
       const resp = await userInstance.loginService(res, email, password)
@@ -61,9 +62,17 @@ export class UserResolver {
     }
   }
 
+  @Query(() => User)
+  async getUserOrders (@Arg("id") id: string) {
+    const userInstance = new UserService()
+    const resp = await userInstance.getOrders(id)
+
+    return resp
+  }
+
   @Query(returns => Boolean)
   logout (
-    @Ctx() { res }: Context) {
+  @Ctx() { res }: Context) {
     try {
       res.clearCookie("token")
       return true
@@ -98,8 +107,8 @@ export class UserResolver {
   @Mutation(returns => UserResponse)
   async resetPassword (
     @Arg("token") token: string,
-    @Arg("newPassword") newPassword: string,
-    @Ctx() { redis }: Context
+      @Arg("newPassword") newPassword: string,
+      @Ctx() { redis }: Context
   ): Promise<UserResponse> {
     try {
       const key = "forgot-password" + token

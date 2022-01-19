@@ -44,7 +44,7 @@ export default function Users () {
   return (
     <Layout title="Users">
       <Grid container spacing={1}>
-        <Grid item md={3} xs={12}>
+        <Grid item md={2} xs={12}>
           <Card className={classes.section}>
             <List>
               <NextLink href="/admin/dashboard" passHref>
@@ -70,7 +70,7 @@ export default function Users () {
             </List>
           </Card>
         </Grid>
-        <Grid item md={9} xs={12}>
+        <Grid item md={10} xs={12}>
           <Card className={classes.section}>
             <List>
               <ListItem>

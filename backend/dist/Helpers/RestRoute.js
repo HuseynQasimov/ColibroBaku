@@ -31,7 +31,14 @@ router.post("/upload", (req, res) => {
         return res.status(400).json({ message: "No file uploaded" });
     }
     const file = req.files?.file;
-    const uploadDir = "C:/Projects/ColibroBaku/colibrobaku-ui/public/images";
+    const extensions = ["jpg", "jpeg", "png"];
+    const fileExtension = file.name.split(".")[1];
+    const isImage = extensions.includes(fileExtension);
+    if (isImage === false) {
+        console.log("Isimage was false value:", isImage);
+        return res.status(401).json({ message: "File should be an image format (jpg, jpeg, png)" });
+    }
+    const uploadDir = "C:/Projects/ColibroBaku/colibrobaku-ui/public/images/";
     // eslint-disable-next-line node/no-path-concat
     file.mv(`${uploadDir}/${file.name}`, (err) => {
         if (err) {

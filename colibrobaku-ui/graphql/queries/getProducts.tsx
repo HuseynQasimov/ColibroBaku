@@ -1,4 +1,4 @@
-  query GetProducts{
+query GetProducts{
     getAllProducts{
       errorMessage
       products{
@@ -11,4 +11,4 @@
       imageUrl
       }
     }
- }
+}

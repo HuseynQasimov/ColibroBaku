@@ -23,7 +23,7 @@ function App ({ Component, pageProps }) {
 
   return (
     <ApolloProvider client={client}>
-      <SnackbarProvider maxSnack={3}>
+      <SnackbarProvider maxSnack={3} anchorOrigin={{ vertical: 'top', horizontal: 'center' }}>
         <StoreContext.Provider value={{ value, setValue, isAdmin, setIsAdmin }}>
           <Component {...pageProps}/>
         </StoreContext.Provider>

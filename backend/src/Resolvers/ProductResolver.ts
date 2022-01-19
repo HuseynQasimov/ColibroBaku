@@ -18,10 +18,20 @@ export class ProductResolver {
     }
   }
 
-  // @Mutation()
-  // async updateProduct () {
-  //   return true
-  // }
+  @Mutation(returns => ProductResponse)
+  async updateProduct (
+    @Args() { model, title, description, price, imageUrl, productCode }: productData,
+    @Arg("id") id: string
+  ): Promise<ProductResponse> {
+    try {
+      const productInstance = new ProductService()
+
+      const resp = await productInstance.update(id, model, title, description, price, imageUrl, productCode)
+      return { products: [resp] }
+    } catch (error: any) {
+      return { errorMessage: error.message }
+    }
+  }
 
   @Mutation(returns => Boolean)
   async deleteProduct (@Arg("id") id: string): Promise<Boolean> {

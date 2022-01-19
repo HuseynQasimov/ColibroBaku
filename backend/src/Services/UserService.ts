@@ -3,6 +3,7 @@ import { getRepository } from "typeorm"
 
 import { User } from "../Models/Entities/UserEntity"
 import { createAccessToken, createRefreshToken } from "../Helpers/createToken"
+import { Order } from "../Models/Entities/OrderEntity"
 
 export class UserService {
   async getUsers () {
@@ -27,6 +28,29 @@ export class UserService {
     } catch {
       throw new Error("Something went wrong")
     }
+  }
+
+  async getOrders (userId: string) {
+    // const orders = await User.findOne({ relations: ["orders"], where: { id: userId } })
+    // const orders = await User.createQueryBuilder("user")
+    //   .leftJoinAndSelect("user.orders", "orders")
+    //   .leftJoinAndSelect("user.orders.products", "product")
+    //   .where("user.id = :id", { id: userId })
+    //   .getOne()
+    const orders = await User.findOne({
+      where: {
+        id: userId
+      },
+      join: {
+        alias: "user",
+        leftJoinAndSelect: {
+          order: "user.orders",
+          product: "order.products"
+        }
+      }
+    })
+    console.log(orders)
+    return orders
   }
 
   async loginService (res: any, email: string, password: string) {

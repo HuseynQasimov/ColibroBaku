@@ -43,6 +43,15 @@ const useStyles = makeStyles({
   },
   dialogPaper: {
     width: '80'
+  },
+  imageSize: {
+    height: '330px',
+    objectFit: 'cover'
+  },
+  paperContainer: {
+    minHeight: '100vh',
+    backgroundImage: `url(${'/background/NaturaBackground.jpg'})`,
+    backgroundSize: 'cover'
   }
 })
 

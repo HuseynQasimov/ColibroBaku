@@ -1,13 +1,15 @@
 import React, { useContext } from 'react'
-import { Button, Card, CardActionArea, CardActions, CardContent, CardMedia, Grid, Typography } from '@material-ui/core'
+import { Button, Card, CardActionArea, CardActions, CardContent, CardMedia, CssBaseline, Grid, Typography } from '@material-ui/core'
 import Layout from '../components/Layout'
 import NextLink from 'next/link'
 import { useGetProductsQuery } from '../graphql/generated/graphql'
 import { useRouter } from 'next/router'
 import { StoreContext } from '../utils/StoreContext'
+import useStyles from '../utils/styles'
 
 export default function Home () {
   const router = useRouter()
+  const classes = useStyles()
   const { value, setValue } = useContext(StoreContext)
   const { data, loading, error } = useGetProductsQuery()
 
@@ -31,8 +33,10 @@ export default function Home () {
     }
   }
   return (
+    <div className={classes.paperContainer}>
+      <CssBaseline/>
     <Layout>
-      <div>
+      <div >
         <h1>Products</h1>
         <Grid container spacing={3}>
           {products.map((product) => (
@@ -40,7 +44,7 @@ export default function Home () {
               <Card>
                 <NextLink href={`/product/${product.id}`} passHref>
                 <CardActionArea>
-                  <CardMedia component="img" image={product.imageUrl} title={product.title}>
+                  <CardMedia className={classes.imageSize} component="img" image={product.imageUrl} title={product.title}>
 
                   </CardMedia>
                   <CardContent>
@@ -64,5 +68,6 @@ export default function Home () {
         </Grid>
       </div>
     </Layout>
+    </div>
   )
 }

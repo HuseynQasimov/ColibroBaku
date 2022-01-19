@@ -7,14 +7,35 @@ import { Controller, useForm } from 'react-hook-form'
 import { useAddProductMutation } from '../../../graphql/generated/graphql'
 import axios from 'axios'
 import swal from 'sweetalert'
+import { gql } from '@apollo/client'
+import { useRouter } from 'next/router'
 
 export default function AddProduct () {
   const { handleSubmit, control, formState: { errors } } = useForm()
   const classes = useStyles()
+  const router = useRouter()
 
   const [selectedFile, setSelectedFile] = useState()
 
-  const [addProduct, { loading }] = useAddProductMutation()
+  const [addProduct, { loading }] = useAddProductMutation({
+    refetchQueries: [{
+      query: gql`
+    query GetProducts{
+      getAllProducts{
+        errorMessage
+        products{
+        id,
+        title,
+        price,
+        model,
+        productCode,
+        description,
+        imageUrl
+      }
+    }
+  }`
+    }]
+  })
 
   // Upload file handler
   const uploadFile = (e) => {
@@ -25,6 +46,8 @@ export default function AddProduct () {
   const submitHandler = async ({ model, price, title, description, productCode }) => {
     const formData = new FormData()
     formData.append('file', selectedFile)
+
+    console.log(formData)
 
     try {
       const res = await axios.post('http://localhost:8000/upload', formData, {
@@ -55,6 +78,8 @@ export default function AddProduct () {
             text: 'Product added successfully!',
             icon: 'success',
             dangerMode: true
+          }).then(() => {
+            router.push('/admin/products')
           })
         }
       }
@@ -62,6 +87,12 @@ export default function AddProduct () {
       if (error.message === 'Request failed with status code 400') {
         swal({
           text: 'No image uploaded',
+          icon: 'error',
+          dangerMode: true
+        }).then()
+      } else if (error.message === 'Request failed with status code 401') {
+        swal({
+          text: 'File should be an image format (jpg, jpeg, png)',
           icon: 'error',
           dangerMode: true
         }).then()

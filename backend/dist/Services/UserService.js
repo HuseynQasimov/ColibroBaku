@@ -47,6 +47,28 @@ class UserService {
             throw new Error("Something went wrong");
         }
     }
+    async getOrders(userId) {
+        // const orders = await User.findOne({ relations: ["orders"], where: { id: userId } })
+        // const orders = await User.createQueryBuilder("user")
+        //   .leftJoinAndSelect("user.orders", "orders")
+        //   .leftJoinAndSelect("user.orders.products", "product")
+        //   .where("user.id = :id", { id: userId })
+        //   .getOne()
+        const orders = await UserEntity_1.User.findOne({
+            where: {
+                id: userId
+            },
+            join: {
+                alias: "user",
+                leftJoinAndSelect: {
+                    order: "user.orders",
+                    product: "order.products"
+                }
+            }
+        });
+        console.log(orders);
+        return orders;
+    }
     async loginService(res, email, password) {
         const user = await UserEntity_1.User.findOne({ where: { email } });
         if (!user) {

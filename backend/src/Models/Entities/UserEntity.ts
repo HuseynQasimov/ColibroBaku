@@ -1,5 +1,7 @@
 import { Field, ID, ObjectType } from "type-graphql"
-import { BaseEntity, Column, Entity, PrimaryGeneratedColumn } from "typeorm"
+import { BaseEntity, Column, Entity, JoinColumn, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm"
+import { Basket } from "./BasketEntity"
+import { Order } from "./OrderEntity"
 
 @ObjectType()
 @Entity({ name: "users" })
@@ -30,4 +32,12 @@ export class User extends BaseEntity {
   @Field()
   @Column()
   isAdmin: Boolean
+
+  @Field(type => [Order])
+  @OneToMany(() => Order, order => order.user)
+  orders: Order[]
+
+  @OneToOne(() => Basket, basket => basket.user)
+  @JoinColumn()
+  basket: Basket
 }

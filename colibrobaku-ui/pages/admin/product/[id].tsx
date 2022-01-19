@@ -4,17 +4,66 @@ import Layout from '../../../components/Layout'
 import NextLink from 'next/link'
 import useStyles from '../../../utils/styles'
 import { Controller, useForm } from 'react-hook-form'
-import { useAddProductMutation } from '../../../graphql/generated/graphql'
+import { useGetProductByIdQuery, useUpdateProductMutation } from '../../../graphql/generated/graphql'
 import axios from 'axios'
 import swal from 'sweetalert'
+import { useRouter } from 'next/router'
+import { gql } from '@apollo/client'
 
 export default function UpdateProduct () {
-  const { handleSubmit, control, formState: { errors } } = useForm()
+  const router = useRouter()
   const classes = useStyles()
+
+  const { handleSubmit, control, formState: { errors } } = useForm()
+
+  const id = router.query.id?.toString()!
+
+  const { data, loading: loa, error } = useGetProductByIdQuery({
+    variables: { id }
+  })
+
+  const product = data?.getProductById?.products
 
   const [selectedFile, setSelectedFile] = useState()
 
-  const [addProduct, { loading }] = useAddProductMutation()
+  const [updateProduct, { loading }] = useUpdateProductMutation({
+    refetchQueries: [{
+      query: gql`
+      query GetProducts{
+        getAllProducts{
+          errorMessage
+          products{
+          id,
+          title,
+          price,
+          model,
+          productCode,
+          description,
+          imageUrl
+        }
+      }
+    }`
+    }]
+  })
+
+  if (loa) {
+    return (<h3>Loading...</h3>)
+  }
+
+  if (!product) {
+    swal({
+      title: 'Something went wrong',
+      text: 'Go to products page',
+      icon: 'error',
+      dangerMode: true
+    }).then(() => (
+      router.push('/admin/products')
+    ))
+  }
+  const defaultFile = product[0].imageUrl
+
+  // setSelectedFile(product[0].imageUrl)
+  // console.log(product)
 
   // Upload file handler
   const uploadFile = (e) => {
@@ -23,45 +72,57 @@ export default function UpdateProduct () {
 
   // Confirm form inputs
   const submitHandler = async ({ model, price, title, description, productCode }) => {
-    const formData = new FormData()
-    formData.append('file', selectedFile)
-
     try {
-      const res = await axios.post('http://localhost:8000/upload', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data'
-        }
-      })
-      const { url } = res.data
+      let fileUrl = defaultFile
 
-      if (url) {
-        const req = {
-          model,
-          price: parseInt(price),
-          title,
-          imageUrl: url,
-          description,
-          productCode
-        }
-        const resp = await addProduct({ variables: req })
-        if (resp.data?.addProduct.errorMessage) {
-          swal({
-            text: resp.data?.addProduct.errorMessage,
-            icon: 'error',
-            dangerMode: true
-          })
-        } else if (resp.data?.addProduct.products) {
-          swal({
-            text: 'Product added successfully!',
-            icon: 'success',
-            dangerMode: true
-          })
-        }
+      if (selectedFile) {
+        const formData = new FormData()
+        formData.append('file', selectedFile)
+
+        const res = await axios.post('http://localhost:8000/upload', formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          }
+        })
+        const { url } = res.data
+        fileUrl = url
+      }
+
+      const req = {
+        id,
+        model,
+        price: parseInt(price),
+        title,
+        imageUrl: fileUrl,
+        description,
+        productCode
+      }
+      const resp = await updateProduct({ variables: req })
+      if (resp.data?.updateProduct.errorMessage) {
+        swal({
+          text: resp.data?.updateProduct.errorMessage,
+          icon: 'error',
+          dangerMode: true
+        })
+      } else if (resp.data?.updateProduct.products) {
+        swal({
+          text: 'Product updated!',
+          icon: 'success',
+          dangerMode: true
+        }).then(() => {
+          router.push('/admin/products')
+        })
       }
     } catch (error: any) {
       if (error.message === 'Request failed with status code 400') {
         swal({
           text: 'No image uploaded',
+          icon: 'error',
+          dangerMode: true
+        }).then()
+      } else if (error.message === 'Request failed with status code 401') {
+        swal({
+          text: 'File should be an image format (jpg, jpeg, png)',
           icon: 'error',
           dangerMode: true
         }).then()
@@ -118,12 +179,14 @@ export default function UpdateProduct () {
                   onSubmit={handleSubmit(submitHandler)}
                   className={classes.productForm}
                 >
+                  {product?.map((item) => (
+                  <>
                   <List>
                     <ListItem>
                       <Controller
                         name="model"
                         control={control}
-                        defaultValue=""
+                        defaultValue={item.model}
                         rules={{
                           required: true
                         }}
@@ -145,7 +208,7 @@ export default function UpdateProduct () {
                       <Controller
                         name="price"
                         control={control}
-                        defaultValue=""
+                        defaultValue={item.price}
                         rules={{
                           required: true,
                           pattern: /^[0-9]{1,}$/
@@ -179,7 +242,7 @@ export default function UpdateProduct () {
                       <Controller
                         name="title"
                         control={control}
-                        defaultValue=""
+                        defaultValue={item.title}
                         rules={{
                           required: true
                         }}
@@ -203,7 +266,7 @@ export default function UpdateProduct () {
                       <Controller
                         name="productCode"
                         control={control}
-                        defaultValue=""
+                        defaultValue={item.productCode}
                         rules={{
                           required: true
                         }}
@@ -225,7 +288,7 @@ export default function UpdateProduct () {
                       <Controller
                         name="description"
                         control={control}
-                        defaultValue="test"
+                        defaultValue={item.description}
                         rules={{
                           required: true
                         }}
@@ -259,7 +322,10 @@ export default function UpdateProduct () {
                       </Button>
                       {loading ? <CircularProgress /> : ''}
                     </ListItem>
+
                   </List>
+                  </>
+                  ))}
                 </form>
               </ListItem>
             </List>

@@ -12,6 +12,8 @@ import fileUpload from "express-fileupload"
 import { UserResolver } from "./Resolvers/UserResolver"
 import router from "./Helpers/restRoute"
 import { ProductResolver } from "./Resolvers/ProductResolver"
+import { OrderResolver } from "./Resolvers/OrderResolver"
+import { BasketResolver } from "./Resolvers/BasketResolver"
 config()
 
 const main = async () => {
@@ -30,7 +32,7 @@ const main = async () => {
 
   await createConnection()
   const schema = await buildSchema({
-    resolvers: [UserResolver, ProductResolver]
+    resolvers: [UserResolver, ProductResolver, OrderResolver, BasketResolver]
   })
 
   const apolloServer = new ApolloServer({

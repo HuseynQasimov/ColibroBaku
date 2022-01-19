@@ -1,0 +1,15 @@
+mutation UpdateProduct ($id:String!, $model:String!, $title:String!, $price:Int!, $description:String!, $imageUrl:String!, $productCode:String!){
+  updateProduct(id: $id, model: $model, title: $title, price: $price, description: $description,
+  imageUrl: $imageUrl, productCode: $productCode)
+  {
+	errorMessage,
+    products{
+      model
+      title
+      price
+      description
+      imageUrl
+      productCode
+    }
+    }
+}
