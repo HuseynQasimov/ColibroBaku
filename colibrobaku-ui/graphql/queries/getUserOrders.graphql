@@ -1,0 +1,19 @@
+query GetUserOrders ($id: String!){
+	getUserOrders(id: $id){
+      id
+      totalPrice
+      completedDate
+      deliveredDate
+      createdDate
+      additions
+      status
+			products{
+        id
+        model
+        productCode
+        price
+        title
+        imageUrl
+      }
+    }
+  }

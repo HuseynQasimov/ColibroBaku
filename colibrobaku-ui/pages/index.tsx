@@ -2,7 +2,7 @@ import React, { useContext } from 'react'
 import { Button, Card, CardActionArea, CardActions, CardContent, CardMedia, CssBaseline, Grid, Typography } from '@material-ui/core'
 import Layout from '../components/Layout'
 import NextLink from 'next/link'
-import { useGetProductsQuery } from '../graphql/generated/graphql'
+import { useCreateOrderMutation, useGetProductsQuery, useUserIdLazyQuery, useUserIdQuery } from '../graphql/generated/graphql'
 import { useRouter } from 'next/router'
 import { StoreContext } from '../utils/StoreContext'
 import useStyles from '../utils/styles'
@@ -10,8 +10,11 @@ import useStyles from '../utils/styles'
 export default function Home () {
   const router = useRouter()
   const classes = useStyles()
-  const { value, setValue } = useContext(StoreContext)
+  const { userId } = useContext(StoreContext)
+
   const { data, loading, error } = useGetProductsQuery()
+
+  const [createOrder] = useCreateOrderMutation()
 
   if (error) {
     console.log(error)
@@ -25,13 +28,26 @@ export default function Home () {
 
   const products = data.getAllProducts.products
 
-  const productOrderHandler = () => {
-    if (!value) {
+  const productOrderHandler = async (productId: string) => {
+    if (!userId) {
       router.push('/user/login')
-    } else {
+    }
+
+    const order = await createOrder({
+      variables: {
+        productId,
+        userId
+      }
+    })
+
+    if (order.errors) {
+      console.log('Something went wrong')
+      router.push('/')
+    } else if (order.data?.createOrder) {
       router.push('/user/orders')
     }
   }
+
   return (
     <div className={classes.paperContainer}>
       <CssBaseline/>
@@ -58,9 +74,9 @@ export default function Home () {
                   <Typography>
                     {product.price} AZN
                   </Typography>
-                  <Button size="small" color="primary" onClick={productOrderHandler}>
-                    Order
-                  </Button>
+                  {/* <Button size="small" color="primary" onClick={() => productOrderHandler(product.id)}>
+                    Details
+                  </Button> */}
                 </CardActions>
               </Card>
             </Grid>

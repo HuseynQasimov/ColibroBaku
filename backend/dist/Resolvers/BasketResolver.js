@@ -21,8 +21,8 @@ let BasketResolver = class BasketResolver {
     constructor() {
         this.basketInstance = new BasketService_1.BasketService();
     }
-    async shootBasket({ totalPrice, userId, productId, additions }) {
-        const resp = await this.basketInstance.shoot(totalPrice, userId, productId, additions);
+    async shootBasket({ userId, productId, additions }) {
+        const resp = await this.basketInstance.shoot(userId, productId, additions);
         return resp;
     }
     async getUserBasket(id) {
@@ -34,9 +34,9 @@ let BasketResolver = class BasketResolver {
             return error.message;
         }
     }
-    async updateUserBasket(id, { additions, totalPrice, productId }) {
+    async updateUserBasket(id, { additions, productId }) {
         try {
-            const resp = this.basketInstance.update(id, additions, totalPrice, productId);
+            const resp = this.basketInstance.update(id, additions, productId);
             return resp;
         }
         catch (error) {

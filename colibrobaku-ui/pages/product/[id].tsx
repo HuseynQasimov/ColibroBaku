@@ -6,18 +6,30 @@ import NextLink from 'next/link'
 import { Button, Card, Grid, Link, List, ListItem, Typography } from '@material-ui/core'
 import useStyles from '../../utils/styles'
 import Image from 'next/image'
-import { useGetProductByIdQuery } from '../../graphql/generated/graphql'
+import { useCreateOrderMutation, useGetProductByIdQuery } from '../../graphql/generated/graphql'
 import { StoreContext } from '../../utils/StoreContext'
+import Cookies from 'js-cookie'
+import jwtDecode, { JwtPayload } from 'jwt-decode'
 
 export default function ProductScreen () {
   const classes = useStyles()
   const router = useRouter()
-  const { value, setValue } = useContext(StoreContext)
+  const { value } = useContext(StoreContext)
   const id = router.query.id?.toString()!
+  const token = Cookies.get('token')
 
   const { data, loading, error } = useGetProductByIdQuery({
     variables: { id }
   })
+
+  const [createOrder] = useCreateOrderMutation()
+
+  let userId: string = ''
+  if (token) {
+    const decoded: JwtPayload = jwtDecode(token)
+
+    userId = Object.values(decoded)[0]
+  }
 
   if (loading) {
     return <p>Loading...</p>
@@ -25,10 +37,21 @@ export default function ProductScreen () {
     return <h1>Page not found</h1>
   }
 
-  const productOrderHandler = () => {
+  const productOrderHandler = async () => {
     if (!value) {
       router.push('/user/login')
-    } else {
+    }
+    const order = await createOrder({
+      variables: {
+        productId: id,
+        userId
+      }
+    })
+
+    if (order.errors) {
+      console.log('Something went wrong')
+      router.push('/')
+    } else if (order.data?.createOrder) {
       router.push('/user/orders')
     }
   }

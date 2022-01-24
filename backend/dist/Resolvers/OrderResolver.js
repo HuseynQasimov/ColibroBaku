@@ -18,19 +18,54 @@ const OrderArgs_1 = require("../Models/Arguments/OrderArgs");
 const OrderEntity_1 = require("../Models/Entities/OrderEntity");
 const OrderService_1 = require("../Services/OrderService");
 let OrderResolver = class OrderResolver {
-    async createOrder({ price, isCompleted, delivered, userId, productId, additions }) {
-        const orderInstance = new OrderService_1.OrderService();
-        const resp = await orderInstance.create(price, isCompleted, delivered, userId, productId, additions);
-        return resp;
+    constructor() {
+        this.orderInstance = new OrderService_1.OrderService();
+        // @Query(returns => Order)
+        // async getOrderById (@Arg("id") id: string) {
+        //   try {
+        //     const orderInstance = new OrderService()
+        //     const resp = await orderInstance.getOne(id)
+        //     return resp
+        //   } catch (error: any) {
+        //     console.log(error.message)
+        //   }
+        // }
     }
-    async getOrderById(id) {
+    async createOrder({ userId, productId, additions }) {
         try {
-            const orderInstance = new OrderService_1.OrderService();
-            const resp = await orderInstance.getOne(id);
+            const resp = await this.orderInstance.create(userId, productId, additions);
             return resp;
         }
         catch (error) {
-            console.log(error.message);
+            console.error(error.message);
+            throw new Error("Something went wrong");
+        }
+    }
+    async removeOrderById(id) {
+        try {
+            await this.orderInstance.removeById(id);
+            return true;
+        }
+        catch (error) {
+            return false;
+        }
+    }
+    async getAllOrders() {
+        try {
+            const resp = await this.orderInstance.getAll();
+            return resp;
+        }
+        catch (error) {
+            return error.message;
+        }
+    }
+    async updateOrder(id, status) {
+        try {
+            const resp = await this.orderInstance.update(id, status);
+            return resp;
+        }
+        catch (error) {
+            return error.message;
         }
     }
 };
@@ -42,12 +77,26 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], OrderResolver.prototype, "createOrder", null);
 __decorate([
-    (0, type_graphql_1.Query)(returns => OrderEntity_1.Order),
+    (0, type_graphql_1.Query)(returns => Boolean),
     __param(0, (0, type_graphql_1.Arg)("id")),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
-], OrderResolver.prototype, "getOrderById", null);
+], OrderResolver.prototype, "removeOrderById", null);
+__decorate([
+    (0, type_graphql_1.Query)(returns => [OrderEntity_1.Order]),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", Promise)
+], OrderResolver.prototype, "getAllOrders", null);
+__decorate([
+    (0, type_graphql_1.Mutation)(returns => OrderEntity_1.Order),
+    __param(0, (0, type_graphql_1.Arg)("id")),
+    __param(1, (0, type_graphql_1.Arg)("status")),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, Number]),
+    __metadata("design:returntype", Promise)
+], OrderResolver.prototype, "updateOrder", null);
 OrderResolver = __decorate([
     (0, type_graphql_1.Resolver)(OrderEntity_1.Order)
 ], OrderResolver);

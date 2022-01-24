@@ -14,12 +14,8 @@ const type_graphql_1 = require("type-graphql");
 let basketData = class basketData {
 };
 __decorate([
-    (0, type_graphql_1.Field)(type => type_graphql_1.Int),
-    __metadata("design:type", Number)
-], basketData.prototype, "totalPrice", void 0);
-__decorate([
-    (0, type_graphql_1.Field)(type => [type_graphql_1.ID]),
-    __metadata("design:type", Array)
+    (0, type_graphql_1.Field)(type => type_graphql_1.ID),
+    __metadata("design:type", String)
 ], basketData.prototype, "productId", void 0);
 __decorate([
     (0, type_graphql_1.Field)({ nullable: true }),

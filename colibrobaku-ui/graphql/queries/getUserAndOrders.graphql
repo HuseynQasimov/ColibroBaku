@@ -1,0 +1,19 @@
+query getUserAndOrders ($id: String!){
+  getUserAndOrders (id: $id){
+    id
+    firstname
+    lastname
+    phone
+    email
+    isAdmin
+    orders{
+      totalPrice
+      createdDate
+      additions
+      status
+      products{
+        id
+      }
+    }
+  }
+}

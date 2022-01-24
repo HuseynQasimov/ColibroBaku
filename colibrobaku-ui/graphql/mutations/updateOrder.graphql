@@ -1,0 +1,11 @@
+mutation UpdateOrder ($id: String!, $status: Float!) {
+  updateOrder(id:$id, status:$status){
+    id
+    totalPrice
+    completedDate
+    deliveredDate
+    status
+    additions
+    createdDate
+  }
+}

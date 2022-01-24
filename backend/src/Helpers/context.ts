@@ -4,6 +4,6 @@ import { Redis } from "ioredis"
 export interface Context {
   req: Request,
   res: Response,
-  payload?: {email: string, name: string, isAdmin: Boolean},
+  payload?: {id: string, name: string, isAdmin: Boolean},
   redis: Redis
 }

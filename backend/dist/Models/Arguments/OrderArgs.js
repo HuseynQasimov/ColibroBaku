@@ -9,16 +9,20 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.orderData = void 0;
+exports.orderData = exports.OrderStatus = void 0;
 const type_graphql_1 = require("type-graphql");
+var OrderStatus;
+(function (OrderStatus) {
+    OrderStatus[OrderStatus["WAITING"] = 0] = "WAITING";
+    OrderStatus[OrderStatus["InProgress"] = 1] = "InProgress";
+    OrderStatus[OrderStatus["COMPLETED"] = 2] = "COMPLETED";
+    OrderStatus[OrderStatus["DELIVERED"] = 3] = "DELIVERED";
+})(OrderStatus = exports.OrderStatus || (exports.OrderStatus = {}));
+(0, type_graphql_1.registerEnumType)(OrderStatus, { name: "OrderStatus" });
 let orderData = class orderData {
 };
 __decorate([
-    (0, type_graphql_1.Field)(type => type_graphql_1.Int),
-    __metadata("design:type", Number)
-], orderData.prototype, "price", void 0);
-__decorate([
-    (0, type_graphql_1.Field)(type => [type_graphql_1.ID]),
+    (0, type_graphql_1.Field)(() => [type_graphql_1.ID]),
     __metadata("design:type", Array)
 ], orderData.prototype, "productId", void 0);
 __decorate([
@@ -26,9 +30,13 @@ __decorate([
     __metadata("design:type", String)
 ], orderData.prototype, "additions", void 0);
 __decorate([
-    (0, type_graphql_1.Field)(type => type_graphql_1.ID),
+    (0, type_graphql_1.Field)(() => type_graphql_1.ID),
     __metadata("design:type", String)
 ], orderData.prototype, "userId", void 0);
+__decorate([
+    (0, type_graphql_1.Field)(() => OrderStatus, { defaultValue: OrderStatus.WAITING }),
+    __metadata("design:type", Number)
+], orderData.prototype, "status", void 0);
 __decorate([
     (0, type_graphql_1.Field)({ defaultValue: false, nullable: true }),
     __metadata("design:type", Boolean)

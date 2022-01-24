@@ -37,7 +37,7 @@ export class UserService {
     //   .leftJoinAndSelect("user.orders.products", "product")
     //   .where("user.id = :id", { id: userId })
     //   .getOne()
-    const orders = await User.findOne({
+    const user = await User.findOne({
       where: {
         id: userId
       },
@@ -49,8 +49,8 @@ export class UserService {
         }
       }
     })
-    console.log(orders)
-    return orders
+    console.log(user?.orders)
+    return user?.orders
   }
 
   async loginService (res: any, email: string, password: string) {
@@ -86,5 +86,40 @@ export class UserService {
     } catch (error) {
       throw new Error("Something went wrong")
     }
+  }
+
+  async getById (id: string) {
+    const user = await User.findOne(id)
+    if (!user) {
+      throw new Error("User not found")
+    }
+    return user
+  }
+
+  async userAndOrders (userId: string) {
+    // const orders = await User.findOne({ relations: ["orders"], where: { id: userId } })
+    // const orders = await User.createQueryBuilder("user")
+    //   .leftJoinAndSelect("user.orders", "orders")
+    //   .leftJoinAndSelect("user.orders.products", "product")
+    //   .where("user.id = :id", { id: userId })
+    //   .getOne()
+    const user = await User.findOne({
+      where: {
+        id: userId
+      },
+      join: {
+        alias: "user",
+        leftJoinAndSelect: {
+          order: "user.orders",
+          product: "order.products"
+        }
+      }
+    })
+
+    if (!user) {
+      throw new Error("User not found")
+    }
+    console.log(user)
+    return user
   }
 }

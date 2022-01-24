@@ -1,0 +1,19 @@
+query GetAllOrders {
+  getAllOrders{
+    id
+    totalPrice
+    completedDate
+    deliveredDate
+    status
+    additions
+    createdDate
+    user{
+      firstname
+      lastname
+      phone
+    }
+    products{
+      id
+    }
+  }
+}

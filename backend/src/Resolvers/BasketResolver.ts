@@ -9,9 +9,9 @@ export class BasketResolver {
 
   @Mutation(() => Basket)
   async shootBasket (@Args()
-    { totalPrice, userId, productId, additions }
+    { userId, productId, additions }
     : basketData) {
-    const resp = await this.basketInstance.shoot(totalPrice, userId, productId, additions)
+    const resp = await this.basketInstance.shoot(userId, productId, additions)
 
     return resp
   }
@@ -29,9 +29,9 @@ export class BasketResolver {
   @Mutation(() => Basket)
   async updateUserBasket (
   @Arg("id") id: string,
-    @Args() { additions, totalPrice, productId }: basketData) {
+    @Args() { additions, productId }: basketData) {
     try {
-      const resp = this.basketInstance.update(id, additions, totalPrice, productId)
+      const resp = this.basketInstance.update(id, additions, productId)
       return resp
     } catch (error :any) {
       return error.message

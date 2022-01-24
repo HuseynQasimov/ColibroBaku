@@ -2,7 +2,7 @@
 import React, { useContext, useState } from 'react'
 import Head from 'next/head'
 import NextLink from 'next/link'
-import { AppBar, Box, Button, Container, Grid, Link, Menu, MenuItem, Toolbar, Typography } from '@material-ui/core'
+import { AppBar, Button, Container, Link, Menu, MenuItem, Toolbar, Typography } from '@material-ui/core'
 import useStyles from '../utils/styles'
 import { StoreContext } from '../utils/StoreContext'
 import jwtDecode, { JwtPayload } from 'jwt-decode'
@@ -11,13 +11,13 @@ import { useLogoutLazyQuery } from '../graphql/generated/graphql'
 import { useRouter } from 'next/router'
 
 export default function Layout ({ title, description, children }) {
+  const classes = useStyles()
   const router = useRouter()
   const { value, setValue, isAdmin, setIsAdmin } = useContext(StoreContext)
 
   const [logout, { data, loading, error }] = useLogoutLazyQuery()
 
   const token = Cookies.get('token')
-
   if (token) {
     const decoded: JwtPayload = jwtDecode(token)
 
@@ -61,7 +61,6 @@ export default function Layout ({ title, description, children }) {
     }
   }
 
-  const classes = useStyles()
   return (
   <div>
     <Head>
@@ -69,7 +68,7 @@ export default function Layout ({ title, description, children }) {
       <title>{title ? `${title} - ColibroBaku` : 'ColibroBaku'}</title>
       {description && <meta name="description" content={description}></meta>}
     </Head>
-    <AppBar position="static" className={classes.navbar}>
+     <AppBar position="static" className={classes.navbar}>
       <Toolbar>
         <NextLink href="/" passHref>
           <Button>
@@ -81,15 +80,18 @@ export default function Layout ({ title, description, children }) {
           {value
             ? (
             <NextLink href="/user/orders" passHref>
-                <Button className={classes.navbarButton}>
-                  <Link>Orders</Link>
-                </Button>
+                <Button
+                  >
+                    Orders
+                  </Button>
             </NextLink>
               )
             : ('')}
           {value
             ? (
-          <><Button
+              <>
+
+          <Button
           id="demo-positioned-button"
           aria-controls={open ? 'demo-positioned-menu' : undefined}
           aria-haspopup="true"
@@ -121,7 +123,8 @@ export default function Layout ({ title, description, children }) {
               )}
 
         </Menu>
-        </>)
+        </>
+              )
             : (<NextLink href="/user/login" passHref>
               <Link>Login</Link>
             </NextLink>
@@ -129,13 +132,12 @@ export default function Layout ({ title, description, children }) {
         </div>
       </Toolbar>
     </AppBar>
+
     <Container className={classes.main}>
       {children}
     </Container>
-    <footer className={classes.footer}>
-
-      <Typography>All rights reserved. ColibroBaku &copy;</Typography>
-    </footer>
+    <div>
+    </div>
   </div>
   )
 }

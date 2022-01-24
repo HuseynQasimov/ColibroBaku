@@ -1,5 +1,6 @@
 import { Field, ID, Int, ObjectType } from "type-graphql"
-import { BaseEntity, Column, Entity, JoinTable, ManyToMany, ManyToOne, PrimaryGeneratedColumn } from "typeorm"
+import { BaseEntity, Column, CreateDateColumn, Entity, JoinTable, ManyToMany, ManyToOne, PrimaryGeneratedColumn } from "typeorm"
+import { OrderStatus } from "../Arguments/OrderArgs"
 import { Product } from "./ProductEntity"
 import { User } from "./UserEntity"
 
@@ -12,7 +13,7 @@ export class Order extends BaseEntity {
 
   @Field(type => Int)
   @Column("int")
-  price: number
+  totalPrice: number
 
   @Field({ nullable: true })
   @Column({ nullable: true })
@@ -21,6 +22,10 @@ export class Order extends BaseEntity {
   @Field({ nullable: true })
   @Column({ nullable: true })
   deliveredDate: Date
+
+  @Field()
+  @Column()
+  status: OrderStatus
 
   @Field(type => [Product])
   @ManyToMany(() => Product)
@@ -31,10 +36,11 @@ export class Order extends BaseEntity {
   @Column({ nullable: true })
   additions: string
 
+  @Field(type => User)
   @ManyToOne(() => User, user => user.orders)
   user: User
 
   @Field()
-  @Column()
-  creationDate: Date
+  @CreateDateColumn()
+  createdDate: Date
 }

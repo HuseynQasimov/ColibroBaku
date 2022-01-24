@@ -10,14 +10,13 @@ import { UserService } from "../Services/UserService"
 import { sendEmail } from "../Helpers/email"
 import { Order } from "../Models/Entities/OrderEntity"
 
-// type UserResponse = User | errorObject | String
-
 @Resolver(User)
 export class UserResolver {
+  private userInstance = new UserService()
+
   @Query(returns => [User], { nullable: true })
   async getAllUsers () {
-    const allUsers = new UserService()
-    const resp = allUsers.getUsers()
+    const resp = this.userInstance.getUsers()
 
     return resp
   }
@@ -28,7 +27,7 @@ export class UserResolver {
     if (!payload) {
       return { errorMessage: "Not Authorized" }
     }
-    const user = await User.findOne({ where: { email: payload.email } })
+    const user = await User.findOne({ where: { id: payload.id } })
     return { userData: user }
   }
 
@@ -40,8 +39,7 @@ export class UserResolver {
     }
 
     try {
-      const userInstance = new UserService()
-      const resp = await userInstance.signUpService(firstname, lastname, phone, email, password, isAdmin)
+      const resp = await this.userInstance.signUpService(firstname, lastname, phone, email, password, isAdmin)
       return { userData: resp }
     } catch (err: any) {
       return { errorMessage: err.message }
@@ -53,8 +51,7 @@ export class UserResolver {
     @Ctx() { res }: Context,
       @Args() { email, password }: loginData): Promise<UserResponse> {
     try {
-      const userInstance = new UserService()
-      const resp = await userInstance.loginService(res, email, password)
+      const resp = await this.userInstance.loginService(res, email, password)
 
       return { userData: resp }
     } catch (err: any) {
@@ -62,10 +59,9 @@ export class UserResolver {
     }
   }
 
-  @Query(() => User)
+  @Query(() => [Order])
   async getUserOrders (@Arg("id") id: string) {
-    const userInstance = new UserService()
-    const resp = await userInstance.getOrders(id)
+    const resp = await this.userInstance.getOrders(id)
 
     return resp
   }
@@ -117,13 +113,32 @@ export class UserResolver {
       if (!userId) {
         return { errorMessage: "Invalid token" }
       }
-      const userInstance = new UserService()
-      const user = await userInstance.resetPassword(userId, newPassword)
+      const user = await this.userInstance.resetPassword(userId, newPassword)
       await redis.del(key)
 
       return { userData: user }
     } catch (error: any) {
       return { errorMessage: error }
+    }
+  }
+
+  @Query(returns => User)
+  async getUserById (@Arg("id") id: string): Promise<User> {
+    try {
+      const resp = await this.userInstance.getById(id)
+      return resp
+    } catch (error: any) {
+      return error.message
+    }
+  }
+
+  @Query(returns => User)
+  async getUserAndOrders (@Arg("id") id: string): Promise<User> {
+    try {
+      const resp = await this.userInstance.userAndOrders(id)
+      return resp
+    } catch (error: any) {
+      return error.message
     }
   }
 }

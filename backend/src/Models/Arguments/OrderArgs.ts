@@ -1,18 +1,27 @@
-import { ArgsType, Field, ID, Int } from "type-graphql"
+import { ArgsType, Field, ID, registerEnumType } from "type-graphql"
+
+export enum OrderStatus {
+  WAITING,
+  InProgress,
+  COMPLETED,
+  DELIVERED
+}
+
+registerEnumType(OrderStatus, { name: "OrderStatus" })
 
 @ArgsType()
 export class orderData {
-  @Field(type => Int)
-  price: number
-
-  @Field(type => [ID])
+  @Field(() => [ID])
   productId: string[]
 
   @Field({ nullable: true })
   additions: string
 
-  @Field(type => ID)
+  @Field(() => ID)
   userId: string
+
+  @Field(() => OrderStatus, { defaultValue: OrderStatus.WAITING })
+  status: OrderStatus
 
   @Field({ defaultValue: false, nullable: true })
   isCompleted: Boolean

@@ -35,7 +35,7 @@ __decorate([
     (0, type_graphql_1.Field)(type => [ProductEntity_1.Product]),
     (0, typeorm_1.ManyToMany)(() => ProductEntity_1.Product),
     (0, typeorm_1.JoinTable)(),
-    __metadata("design:type", Array)
+    __metadata("design:type", ProductEntity_1.Product)
 ], Basket.prototype, "products", void 0);
 __decorate([
     (0, typeorm_1.OneToOne)(() => UserEntity_1.User, user => user.basket),

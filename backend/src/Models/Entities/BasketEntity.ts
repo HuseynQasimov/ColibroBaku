@@ -1,5 +1,6 @@
 import { Field, ID, Int, ObjectType } from "type-graphql"
 import { BaseEntity, Column, Entity, JoinTable, ManyToMany, ManyToOne, OneToOne, PrimaryGeneratedColumn } from "typeorm"
+import { ProductService } from "../../Services/ProductService"
 import { Product } from "./ProductEntity"
 import { User } from "./UserEntity"
 
@@ -21,7 +22,7 @@ export class Basket extends BaseEntity {
   @Field(type => [Product])
   @ManyToMany(() => Product)
   @JoinTable()
-  products: Product[]
+  products: Product
 
   @OneToOne(() => User, user => user.basket)
   user: User
