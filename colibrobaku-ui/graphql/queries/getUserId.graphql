@@ -1,0 +1,8 @@
+query UserId{
+  userId{
+    errorMessage
+    userData{
+      id
+    }
+  }
+}

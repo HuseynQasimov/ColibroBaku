@@ -12,11 +12,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.ProductResponse = void 0;
 const type_graphql_1 = require("type-graphql");
 const ProductEntity_1 = require("../Models/Entities/ProductEntity");
-// ObjectType()
-// class Error {
-//   @Field(returns => String)
-//   message: string
-// }
 let ProductResponse = class ProductResponse {
 };
 __decorate([
@@ -25,7 +20,7 @@ __decorate([
 ], ProductResponse.prototype, "errorMessage", void 0);
 __decorate([
     (0, type_graphql_1.Field)(returns => [ProductEntity_1.Product], { nullable: true }),
-    __metadata("design:type", ProductEntity_1.Product)
+    __metadata("design:type", Array)
 ], ProductResponse.prototype, "products", void 0);
 ProductResponse = __decorate([
     (0, type_graphql_1.ObjectType)()

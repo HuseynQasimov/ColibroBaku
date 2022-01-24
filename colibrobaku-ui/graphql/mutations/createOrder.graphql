@@ -1,0 +1,12 @@
+mutation CreateOrder( $userId: ID!, $productId:[ID!]!, $additinos: String){
+	createOrder(userId:$userId,productId:$productId, additions:$additinos )
+  {
+   	id
+    completedDate
+    deliveredDate
+    additions
+    createdDate
+    totalPrice
+    status
+  }
+}

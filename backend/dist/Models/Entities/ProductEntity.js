@@ -48,7 +48,7 @@ __decorate([
     (0, type_graphql_1.Field)(),
     (0, typeorm_1.Column)("text"),
     __metadata("design:type", String)
-], Product.prototype, "images", void 0);
+], Product.prototype, "imageUrl", void 0);
 Product = __decorate([
     (0, type_graphql_1.ObjectType)(),
     (0, typeorm_1.Entity)({ name: "products" })

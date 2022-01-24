@@ -19,24 +19,36 @@ const ProductArgs_1 = require("../Models/Arguments/ProductArgs");
 const ProductEntity_1 = require("../Models/Entities/ProductEntity");
 const ProductService_1 = require("../Services/ProductService");
 let ProductResolver = class ProductResolver {
-    async addProduct({ model, title, description, price, images, productCode }) {
+    async addProduct({ model, title, description, price, imageUrl, productCode }) {
         try {
             const productInstance = new ProductService_1.ProductService();
-            await productInstance.add(model, title, description, price, images, productCode);
-            return true;
+            const resp = await productInstance.add(model, title, description, price, imageUrl, productCode);
+            return { products: [resp] };
         }
         catch (err) {
+            return { errorMessage: err.message };
+        }
+    }
+    async updateProduct({ model, title, description, price, imageUrl, productCode }, id) {
+        try {
+            const productInstance = new ProductService_1.ProductService();
+            const resp = await productInstance.update(id, model, title, description, price, imageUrl, productCode);
+            return { products: [resp] };
+        }
+        catch (error) {
+            return { errorMessage: error.message };
+        }
+    }
+    async deleteProduct(id) {
+        try {
+            const productInstance = new ProductService_1.ProductService();
+            await productInstance.delete(id);
+            return true;
+        }
+        catch (error) {
             return false;
         }
     }
-    // @Mutation()
-    // async updateProduct () {
-    //   return true
-    // }
-    // @Mutation()
-    // async deleteProduct () {
-    //   return true
-    // }
     async getAllProducts() {
         try {
             const productInstance = new ProductService_1.ProductService();
@@ -47,20 +59,52 @@ let ProductResolver = class ProductResolver {
             return { errorMessage: err.message };
         }
     }
+    async getProductById(id) {
+        try {
+            const productInstance = new ProductService_1.ProductService();
+            const resp = await productInstance.getById(id);
+            return { products: [resp] };
+        }
+        catch (err) {
+            return { errorMessage: err.message };
+        }
+    }
 };
 __decorate([
-    (0, type_graphql_1.Mutation)(returns => Boolean),
+    (0, type_graphql_1.Mutation)(returns => productResponse_1.ProductResponse),
     __param(0, (0, type_graphql_1.Args)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [ProductArgs_1.productData]),
     __metadata("design:returntype", Promise)
 ], ProductResolver.prototype, "addProduct", null);
 __decorate([
+    (0, type_graphql_1.Mutation)(returns => productResponse_1.ProductResponse),
+    __param(0, (0, type_graphql_1.Args)()),
+    __param(1, (0, type_graphql_1.Arg)("id")),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [ProductArgs_1.productData, String]),
+    __metadata("design:returntype", Promise)
+], ProductResolver.prototype, "updateProduct", null);
+__decorate([
+    (0, type_graphql_1.Mutation)(returns => Boolean),
+    __param(0, (0, type_graphql_1.Arg)("id")),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], ProductResolver.prototype, "deleteProduct", null);
+__decorate([
     (0, type_graphql_1.Query)(returns => productResponse_1.ProductResponse, { nullable: true }),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", Promise)
 ], ProductResolver.prototype, "getAllProducts", null);
+__decorate([
+    (0, type_graphql_1.Query)(returns => productResponse_1.ProductResponse, { nullable: true }),
+    __param(0, (0, type_graphql_1.Arg)("id")),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], ProductResolver.prototype, "getProductById", null);
 ProductResolver = __decorate([
     (0, type_graphql_1.Resolver)(ProductEntity_1.Product)
 ], ProductResolver);

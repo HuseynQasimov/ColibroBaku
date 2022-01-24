@@ -16,22 +16,22 @@ let productData = class productData {
 };
 __decorate([
     (0, type_graphql_1.Field)(),
-    (0, class_validator_1.Length)(3, 24),
+    (0, class_validator_1.Length)(3, 124),
     __metadata("design:type", String)
 ], productData.prototype, "model", void 0);
 __decorate([
     (0, type_graphql_1.Field)(),
-    (0, class_validator_1.Length)(3, 24),
+    (0, class_validator_1.Length)(3, 64),
     __metadata("design:type", String)
 ], productData.prototype, "productCode", void 0);
 __decorate([
     (0, type_graphql_1.Field)(),
-    (0, class_validator_1.Length)(6, 64),
+    (0, class_validator_1.Length)(6, 124),
     __metadata("design:type", String)
 ], productData.prototype, "title", void 0);
 __decorate([
     (0, type_graphql_1.Field)(),
-    (0, class_validator_1.Length)(6, 124),
+    (0, class_validator_1.Length)(6, 1022),
     __metadata("design:type", String)
 ], productData.prototype, "description", void 0);
 __decorate([
@@ -41,7 +41,7 @@ __decorate([
 __decorate([
     (0, type_graphql_1.Field)(),
     __metadata("design:type", String)
-], productData.prototype, "images", void 0);
+], productData.prototype, "imageUrl", void 0);
 productData = __decorate([
     (0, type_graphql_1.ArgsType)()
 ], productData);

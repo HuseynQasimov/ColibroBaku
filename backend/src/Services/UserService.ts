@@ -3,6 +3,7 @@ import { getRepository } from "typeorm"
 
 import { User } from "../Models/Entities/UserEntity"
 import { createAccessToken, createRefreshToken } from "../Helpers/createToken"
+import { Order } from "../Models/Entities/OrderEntity"
 
 export class UserService {
   async getUsers () {
@@ -12,19 +13,44 @@ export class UserService {
     return allUsers
   }
 
-  async signUpService (firstname:string, lastname:string, email:string, password:string) {
+  async signUpService (firstname:string, lastname:string, phone:string, email:string, password:string, isAdmin: Boolean) {
     const hashedPass = await bcrypt.hash(password, 12)
     try {
       const user = await User.create({
         firstname,
         lastname,
+        phone,
         email,
-        password: hashedPass
+        password: hashedPass,
+        isAdmin
       }).save()
       return user
     } catch {
       throw new Error("Something went wrong")
     }
+  }
+
+  async getOrders (userId: string) {
+    // const orders = await User.findOne({ relations: ["orders"], where: { id: userId } })
+    // const orders = await User.createQueryBuilder("user")
+    //   .leftJoinAndSelect("user.orders", "orders")
+    //   .leftJoinAndSelect("user.orders.products", "product")
+    //   .where("user.id = :id", { id: userId })
+    //   .getOne()
+    const user = await User.findOne({
+      where: {
+        id: userId
+      },
+      join: {
+        alias: "user",
+        leftJoinAndSelect: {
+          order: "user.orders",
+          product: "order.products"
+        }
+      }
+    })
+    console.log(user?.orders)
+    return user?.orders
   }
 
   async loginService (res: any, email: string, password: string) {
@@ -60,5 +86,40 @@ export class UserService {
     } catch (error) {
       throw new Error("Something went wrong")
     }
+  }
+
+  async getById (id: string) {
+    const user = await User.findOne(id)
+    if (!user) {
+      throw new Error("User not found")
+    }
+    return user
+  }
+
+  async userAndOrders (userId: string) {
+    // const orders = await User.findOne({ relations: ["orders"], where: { id: userId } })
+    // const orders = await User.createQueryBuilder("user")
+    //   .leftJoinAndSelect("user.orders", "orders")
+    //   .leftJoinAndSelect("user.orders.products", "product")
+    //   .where("user.id = :id", { id: userId })
+    //   .getOne()
+    const user = await User.findOne({
+      where: {
+        id: userId
+      },
+      join: {
+        alias: "user",
+        leftJoinAndSelect: {
+          order: "user.orders",
+          product: "order.products"
+        }
+      }
+    })
+
+    if (!user) {
+      throw new Error("User not found")
+    }
+    console.log(user)
+    return user
   }
 }

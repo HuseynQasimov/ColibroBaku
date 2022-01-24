@@ -12,12 +12,19 @@ export class signUpData {
   lastname: string
 
   @Field()
+  @Length(13)
+  phone: string
+
+  @Field()
   @Length(6, 64)
   email: string
 
   @Field()
   @Length(6, 24)
   password: string
+
+  @Field({ defaultValue: false, nullable: true })
+  isAdmin: Boolean
 }
 
 @ArgsType()

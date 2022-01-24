@@ -1,0 +1,14 @@
+mutation AddProduct(
+  $model: String!, $productCode: String!, $title: String!, $description: String!, $price: Int!, $imageUrl: String!
+  )
+{
+	addProduct(
+    model:$model,productCode:$productCode,title:$title,description:$description,price:$price,imageUrl:$imageUrl
+    )
+  {
+    errorMessage
+    products{
+      id
+    }
+  }
+}

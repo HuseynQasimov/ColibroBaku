@@ -21,28 +21,29 @@ const UserArgs_1 = require("../Models/Arguments/UserArgs");
 const UserEntity_1 = require("../Models/Entities/UserEntity");
 const UserService_1 = require("../Services/UserService");
 const email_1 = require("../Helpers/email");
-// type UserResponse = User | errorObject | String
+const OrderEntity_1 = require("../Models/Entities/OrderEntity");
 let UserResolver = class UserResolver {
+    constructor() {
+        this.userInstance = new UserService_1.UserService();
+    }
     async getAllUsers() {
-        const allUsers = new UserService_1.UserService();
-        const resp = allUsers.getUsers();
+        const resp = this.userInstance.getUsers();
         return resp;
     }
     async userId({ payload }) {
         if (!payload) {
             return { errorMessage: "Not Authorized" };
         }
-        const user = await UserEntity_1.User.findOne({ where: { email: payload.email } });
+        const user = await UserEntity_1.User.findOne({ where: { id: payload.id } });
         return { userData: user };
     }
-    async signUp({ firstname, lastname, email, password }) {
+    async signUp({ firstname, lastname, phone, email, password, isAdmin }) {
         const user = await UserEntity_1.User.findOne({ where: { email } });
         if (user) {
             return { errorMessage: "Email already signed up" };
         }
         try {
-            const userInstance = new UserService_1.UserService();
-            const resp = await userInstance.signUpService(firstname, lastname, email, password);
+            const resp = await this.userInstance.signUpService(firstname, lastname, phone, email, password, isAdmin);
             return { userData: resp };
         }
         catch (err) {
@@ -51,13 +52,16 @@ let UserResolver = class UserResolver {
     }
     async login({ res }, { email, password }) {
         try {
-            const userInstance = new UserService_1.UserService();
-            const resp = await userInstance.loginService(res, email, password);
+            const resp = await this.userInstance.loginService(res, email, password);
             return { userData: resp };
         }
         catch (err) {
             return { errorMessage: err.message };
         }
+    }
+    async getUserOrders(id) {
+        const resp = await this.userInstance.getOrders(id);
+        return resp;
     }
     logout({ res }) {
         try {
@@ -75,10 +79,15 @@ let UserResolver = class UserResolver {
             return { errorMessage: "Something went wrong" };
         }
         const token = (0, uuid_1.v4)();
-        await redis.set("forgot-password" + token, user.id, "ex", 1000 * 60 * 60 * 24);
-        const emailContent = `<a href="http://localhost:3000/reset-password/${token}">Reset password</a>`;
-        await (0, email_1.sendEmail)(email, emailContent);
-        return { userData: user };
+        try {
+            await redis.set("forgot-password" + token, user.id, "ex", 1000 * 60 * 60 * 24);
+            const emailContent = `<a href="http://localhost:3000/user/${token}">Reset password</a>`;
+            await (0, email_1.sendEmail)(email, emailContent);
+            return { userData: user };
+        }
+        catch (error) {
+            return { errorMessage: error.message };
+        }
     }
     async resetPassword(token, newPassword, { redis }) {
         try {
@@ -87,13 +96,30 @@ let UserResolver = class UserResolver {
             if (!userId) {
                 return { errorMessage: "Invalid token" };
             }
-            const userInstance = new UserService_1.UserService();
-            const user = await userInstance.resetPassword(userId, newPassword);
+            const user = await this.userInstance.resetPassword(userId, newPassword);
             await redis.del(key);
             return { userData: user };
         }
         catch (error) {
             return { errorMessage: error };
+        }
+    }
+    async getUserById(id) {
+        try {
+            const resp = await this.userInstance.getById(id);
+            return resp;
+        }
+        catch (error) {
+            return error.message;
+        }
+    }
+    async getUserAndOrders(id) {
+        try {
+            const resp = await this.userInstance.userAndOrders(id);
+            return resp;
+        }
+        catch (error) {
+            return error.message;
         }
     }
 };
@@ -127,7 +153,14 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], UserResolver.prototype, "login", null);
 __decorate([
-    (0, type_graphql_1.Mutation)(returns => Boolean),
+    (0, type_graphql_1.Query)(() => [OrderEntity_1.Order]),
+    __param(0, (0, type_graphql_1.Arg)("id")),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], UserResolver.prototype, "getUserOrders", null);
+__decorate([
+    (0, type_graphql_1.Query)(returns => Boolean),
     __param(0, (0, type_graphql_1.Ctx)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
@@ -150,6 +183,20 @@ __decorate([
     __metadata("design:paramtypes", [String, String, Object]),
     __metadata("design:returntype", Promise)
 ], UserResolver.prototype, "resetPassword", null);
+__decorate([
+    (0, type_graphql_1.Query)(returns => UserEntity_1.User),
+    __param(0, (0, type_graphql_1.Arg)("id")),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], UserResolver.prototype, "getUserById", null);
+__decorate([
+    (0, type_graphql_1.Query)(returns => UserEntity_1.User),
+    __param(0, (0, type_graphql_1.Arg)("id")),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], UserResolver.prototype, "getUserAndOrders", null);
 UserResolver = __decorate([
     (0, type_graphql_1.Resolver)(UserEntity_1.User)
 ], UserResolver);

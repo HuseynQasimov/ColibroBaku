@@ -1,0 +1,14 @@
+query GetProductById($id: String!){
+  getProductById(id:$id) {
+    errorMessage
+    products{
+      id
+      title
+      model
+      productCode
+      description
+      price
+      imageUrl
+    }
+  }
+}
